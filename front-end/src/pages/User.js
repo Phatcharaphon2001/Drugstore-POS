@@ -1,9 +1,16 @@
 import React, { Component } from 'react'
-
+import Container from 'react-bootstrap/Container';
 export default class User extends Component {
   render() {
     return (
-      <div>User</div>
+      <Container>
+        <h1>User</h1>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris posuere non eros vel efficitur. Nunc vel congue nulla, et cursus felis. Sed ornare leo ac molestie posuere. Quisque bibendum ornare turpis non placerat. In ut erat eu lorem tristique blandit. Aliquam ornare erat consequat diam tristique, a fermentum lectus commodo. Suspendisse metus leo, rutrum et mi sed, aliquet finibus diam. Nulla ut dapibus tortor. Duis vel nunc at lacus faucibus dignissim. Vestibulum nibh ligula, feugiat non mi non, imperdiet elementum massa. Cras gravida ex quis accumsan pulvinar. In hac habitasse platea dictumst. Duis feugiat lorem nec tristique lacinia. Nullam dui ante, mollis in gravida et, pellentesque vitae turpis.</p>
+        <p>Aenean blandit ullamcorper nibh in tristique. Mauris sit amet lectus quis lorem laoreet lobortis eu nec nisi. Sed dictum, mi ac ullamcorper convallis, metus nibh viverra magna, id mattis mi leo quis elit. Suspendisse commodo urna a felis ultricies, et sollicitudin eros vestibulum. Phasellus semper euismod ex quis consequat. Nullam tincidunt sapien ac tellus egestas fermentum. Nunc id purus non dui ultrices aliquet. Vivamus et gravida arcu. Suspendisse molestie facilisis justo eu ultricies.</p>
+        <p>Quisque sed magna id nisi elementum tempus id a turpis. Vivamus eget enim id lorem congue vulputate et vitae orci. In nec metus at quam vulputate tempor. Duis placerat tortor ante, eget suscipit tellus tristique at. Fusce consectetur arcu eu rhoncus interdum. Integer eget tincidunt ipsum. Nam non quam a ligula pretium porttitor vel euismod sapien. Donec ac nisi quis ex consectetur accumsan. Sed pellentesque tellus sed felis interdum vulputate sit amet et urna. Fusce suscipit venenatis semper. Maecenas arcu enim, fringilla id egestas vitae, aliquet eu dolor. Sed pulvinar iaculis iaculis. In hac habitasse platea dictumst. Nunc a ornare magna. Sed pretium posuere molestie. Suspendisse vestibulum, dolor nec porttitor dapibus, eros ante efficitur elit, eu interdum purus metus ac ipsum.</p>
+        <p>Duis tempor libero eu tincidunt volutpat. Nunc at vehicula sem. Nam nec tempor nulla. Donec dapibus mauris quis lectus laoreet auctor quis quis erat. Pellentesque nec pharetra neque. Mauris mattis euismod cursus. Mauris auctor auctor fringilla. Etiam tempor fringilla gravida.</p>
+        <p>Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam a est id est sollicitudin mollis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed nec odio sit amet lectus auctor eleifend. Suspendisse aliquet libero non aliquam condimentum. Quisque id faucibus nibh, ut sodales felis. Vestibulum id tristique eros, eu dapibus risus. Cras commodo dolor ut nibh egestas, ac condimentum tortor accumsan. Quisque mauris turpis, aliquam ut enim ut, porttitor fringilla sem. In hac habitasse platea dictumst. Curabitur magna est, tincidunt id justo quis, interdum convallis odio. In feugiat quis ante eget varius. Nullam convallis tincidunt lorem eu dignissim. Fusce ultricies massa est, vel aliquet leo ullamcorper at.</p>
+      </Container>
     )
   }
 }
