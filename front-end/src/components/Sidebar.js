@@ -24,9 +24,6 @@ export default function Sidebar() {
                 <NavLink exact to="/" activeClassName="activeClicked">
                 <CDBSidebarMenuItem icon="home">Home</CDBSidebarMenuItem>
                 </NavLink>
-                <NavLink exact to="/dashboard" activeClassName="activeClicked">
-                <CDBSidebarMenuItem icon="columns">Dashboard</CDBSidebarMenuItem>
-                </NavLink>
                 <NavLink exact to="/sales" activeClassName="activeClicked">
                 <CDBSidebarMenuItem icon="shopping-cart">Sales</CDBSidebarMenuItem>
                 </NavLink>
