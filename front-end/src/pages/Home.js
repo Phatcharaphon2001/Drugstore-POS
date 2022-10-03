@@ -21,16 +21,16 @@ export default class Home extends Component {
     let month_th = ["มกราคม", "กุมภาพันธ์", "มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"];
 
     return (
-        <Container>
-          <div className="text-center vh-100 mt-5 p-5">
+        <Container className="vh-100">
+          <div className="text-center px-5 pt-5">
             <h1 className="mb-5">วัน{day_th[day]} ที่ {date} {month_th[month]} {year}</h1>
             <Row>
               <Col xs={12} md={6} lg={3}>
               <Link to="/sales" className="text-decoration-none">
-                <Card className="w-100 mb-3" bg="success" text="light">
+                <Card className="w-100 mb-3" style={{backgroundColor: "#00973D"}} text="light">
                   <Card.Body>
                     <Card.Title className="display-1"><FaIcons.FaShoppingCart/></Card.Title>
-                    <Card.Text className="mb-3">
+                    <Card.Text className="mb-4">
                       Sales
                     </Card.Text>
                   </Card.Body>
@@ -42,7 +42,7 @@ export default class Home extends Component {
                   <Card className="w-100 mb-3" bg="primary" text="light">
                     <Card.Body>
                       <Card.Title className="display-1"><MdIcons.MdOutlineInventory/></Card.Title>
-                      <Card.Text className="mb-3">
+                      <Card.Text className="mb-4">
                         Inventory
                       </Card.Text>
                     </Card.Body>
@@ -54,7 +54,7 @@ export default class Home extends Component {
                   <Card  className="w-100 mb-3" bg="warning" text="dark">
                     <Card.Body>
                       <Card.Title className="display-1"><IoIcons.IoMdPeople/></Card.Title>
-                      <Card.Text className="mb-3">
+                      <Card.Text className="mb-4">
                         User
                       </Card.Text>
                     </Card.Body>
@@ -63,10 +63,10 @@ export default class Home extends Component {
               </Col>
               <Col xs={12} md={6} lg={3}>
                 <Link to="/report" className="text-decoration-none">
-                <Card className="w-100 mb-3" bg="secondary" text="light">
+                <Card className="w-100 mb-3" style={{backgroundColor: "#AB47BC"}} text="light">
                   <Card.Body>
                     <Card.Title className="display-1"><IoIcons.IoIosPaper/></Card.Title>
-                    <Card.Text className="mb-3">
+                    <Card.Text className="mb-4">
                       Report
                     </Card.Text>
                   </Card.Body>
