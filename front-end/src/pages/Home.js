@@ -7,6 +7,7 @@ import * as MdIcons from 'react-icons/md';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import { Link } from "react-router-dom";
 
 export default class Home extends Component {
   render() {
@@ -25,7 +26,7 @@ export default class Home extends Component {
             <h1 className="mb-5">วัน{day_th[day]} ที่ {date} {month_th[month]} {year}</h1>
             <Row>
               <Col xs={12} md={6} lg={3}>
-                <a href="/sales" className="text-decoration-none">
+              <Link to="/sales" className="text-decoration-none">
                 <Card className="w-100 mb-3" bg="success" text="light">
                   <Card.Body>
                     <Card.Title className="display-1"><FaIcons.FaShoppingCart/></Card.Title>
@@ -34,10 +35,10 @@ export default class Home extends Component {
                     </Card.Text>
                   </Card.Body>
                   </Card>
-                  </a>
+                  </Link>
               </Col>
               <Col xs={12} md={6} lg={3}>
-                <a href="/inventory" className="text-decoration-none">
+                <Link to="/inventory" className="text-decoration-none">
                   <Card className="w-100 mb-3" bg="primary" text="light">
                     <Card.Body>
                       <Card.Title className="display-1"><MdIcons.MdOutlineInventory/></Card.Title>
@@ -46,10 +47,10 @@ export default class Home extends Component {
                       </Card.Text>
                     </Card.Body>
                   </Card>
-                </a>
+                </Link>
               </Col>
               <Col xs={12} md={6} lg={3}>
-                <a href="/user" className="text-decoration-none">
+                <Link to="/user" className="text-decoration-none">
                   <Card  className="w-100 mb-3" bg="warning" text="dark">
                     <Card.Body>
                       <Card.Title className="display-1"><IoIcons.IoMdPeople/></Card.Title>
@@ -58,10 +59,10 @@ export default class Home extends Component {
                       </Card.Text>
                     </Card.Body>
                   </Card>
-                </a>
+                </Link>
               </Col>
               <Col xs={12} md={6} lg={3}>
-                <a href="/report" className="text-decoration-none">
+                <Link to="/report" className="text-decoration-none">
                 <Card className="w-100 mb-3" bg="secondary" text="light">
                   <Card.Body>
                     <Card.Title className="display-1"><IoIcons.IoIosPaper/></Card.Title>
@@ -70,7 +71,7 @@ export default class Home extends Component {
                     </Card.Text>
                   </Card.Body>
                 </Card>
-                </a>
+                </Link>
               </Col>
             </Row>
           </div>
