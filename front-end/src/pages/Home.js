@@ -1,10 +1,15 @@
 import React, { Component } from 'react'
+import Container from 'react-bootstrap/Container';
 export default class Home extends Component {
   render() {
     return (
-      <div>
-        Home
-      </div>
+        <Container>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec feugiat dui vel ex hendrerit auctor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Donec in mauris ut metus eleifend pellentesque. Praesent vestibulum, odio nec porta porta, nibh enim efficitur est, quis aliquet libero elit at quam. Aenean condimentum, augue at bibendum varius, sem ante volutpat risus, a ultricies metus nibh ac ante. Nulla rhoncus arcu in eros tincidunt, vitae venenatis purus rutrum. Sed nec felis ac elit consectetur lobortis.</p>
+          <p>Quisque bibendum ligula sit amet rhoncus posuere. Aenean vitae sagittis felis. Curabitur mauris lectus, pulvinar non quam ac, ultricies feugiat nisl. Aenean vestibulum tellus nec mi fermentum, nec ornare neque laoreet. Nam ligula mauris, efficitur ac metus at, feugiat fermentum ex. Nullam ullamcorper nibh in congue mollis. Phasellus dapibus dui non urna facilisis efficitur. Proin nec turpis libero.</p>
+          <p>Ut neque sem, suscipit eget neque quis, pharetra scelerisque elit. Vivamus aliquet lorem quis metus imperdiet finibus quis ut urna. Curabitur sed leo ullamcorper, maximus tortor non, euismod metus. Integer scelerisque interdum dignissim. Curabitur accumsan tincidunt felis id malesuada. Vivamus sodales dictum magna, at ornare mi tristique non. Etiam eu porttitor ante. Donec id massa accumsan, auctor est a, lobortis libero. In ultricies neque eu magna facilisis consectetur. Duis id mattis risus. Quisque nisl magna, varius sed pellentesque in, volutpat a nibh. Aenean aliquam ex nec ante accumsan, eu auctor nisi mattis. Proin et ante sit amet orci elementum tincidunt egestas eget sem. Vestibulum et lorem quis tellus aliquet placerat. Ut eleifend dui ut odio tristique fermentum. Nunc at diam pharetra, aliquet dolor vel, euismod ante.</p>
+          <p>In quis sollicitudin leo. Pellentesque in neque at justo vulputate cursus. Phasellus sed odio sit amet lectus vestibulum posuere. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Cras consectetur orci at tellus rutrum, vitae sollicitudin velit ultricies. Integer varius metus et ex tincidunt, sit amet tristique augue fermentum. Aliquam fermentum tincidunt risus. Ut varius, lectus a pulvinar tempor, nibh dolor accumsan dolor, ac sodales est nunc et est. Pellentesque ac sollicitudin sem. Nunc aliquet non nulla sed iaculis. Proin ultrices libero et nisl lacinia volutpat. Nullam pulvinar ultricies erat at egestas. Proin ornare placerat ornare. Quisque auctor, neque sed iaculis bibendum, est augue faucibus nunc, vel facilisis quam magna ac ligula.</p>
+          <p>Fusce non elit ut tellus tempor vulputate eget a neque. Nam ornare nisl ut turpis fringilla, bibendum elementum lorem feugiat. Fusce cursus libero metus, eget hendrerit diam vehicula vel. Sed vulputate hendrerit ornare. Quisque egestas, nulla et viverra consectetur, sem orci gravida tortor, nec viverra ex velit venenatis ex. Aenean varius, ligula sed condimentum commodo, sapien magna blandit diam, ut dignissim tortor lorem eget enim. In eu pulvinar enim, a lobortis urna. Proin molestie at sapien vestibulum pretium. Nam eget ullamcorper ipsum. Donec quis enim consequat, imperdiet dui sed, gravida lacus. Nunc id tempor urna, in tincidunt metus. Duis dapibus nibh a varius posuere.</p>
+        </Container>
     )
   }
 }

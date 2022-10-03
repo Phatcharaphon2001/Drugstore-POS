@@ -1,46 +1,55 @@
-import React, { useState } from 'react';
+import React from 'react';
+import {
+    CDBSidebar,
+    CDBSidebarContent,
+    CDBSidebarFooter,
+    CDBSidebarHeader,
+    CDBSidebarMenu,
+    CDBSidebarMenuItem,
+} from 'cdbreact';
+import { NavLink } from 'react-router-dom';
 import * as FaIcons from 'react-icons/fa';
-import * as AiIcons from 'react-icons/ai';
-import { Link } from 'react-router-dom';
-import { SidebarData } from './SidebarData';
-import "./Sidebar-style.css"
-import { IconContext } from 'react-icons';
 
-function Sidebar () {
-  const [sidebar, setSidebar] = useState(false);
+export default function Sidebar() {
+    return (
+        <CDBSidebar textColor="#fff" backgroundColor="#333" style={{ height: '100vh', overflow: 'scroll initial' }}>
+            <CDBSidebarHeader prefix={<i className="fa fa-bars fa-large"></i>}>
+            <a href="/" className="text-decoration-none" style={{ color: 'inherit' }}>
+                Pharmacy POS
+            </a>
+            </CDBSidebarHeader>
 
-  const showSidebar = () => setSidebar(!sidebar);
+            <CDBSidebarContent className="sidebar-content">
+            <CDBSidebarMenu>
+                <NavLink exact to="/" activeClassName="activeClicked">
+                <CDBSidebarMenuItem icon="home">Home</CDBSidebarMenuItem>
+                </NavLink>
+                <NavLink exact to="/dashboard" activeClassName="activeClicked">
+                <CDBSidebarMenuItem icon="columns">Dashboard</CDBSidebarMenuItem>
+                </NavLink>
+                <NavLink exact to="/sales" activeClassName="activeClicked">
+                <CDBSidebarMenuItem icon="shopping-cart">Sales</CDBSidebarMenuItem>
+                </NavLink>
+                <NavLink exact to="/user" activeClassName="activeClicked">
+                <CDBSidebarMenuItem icon="user">Users</CDBSidebarMenuItem>
+                </NavLink>
+                <NavLink exact to="/report" activeClassName="activeClicked">
+                <CDBSidebarMenuItem icon="file">Report</CDBSidebarMenuItem>
+                </NavLink>
+            </CDBSidebarMenu>
+            </CDBSidebarContent>
 
-  return (
-    <>
-      <IconContext.Provider value={{ color: '#fff' }}>
-        <div className='navbar'>
-          <Link to='#' className='menu-bars'>
-            <FaIcons.FaBars onClick={showSidebar} />
-          </Link>
-        </div>
-        <nav className={sidebar ? 'nav-menu active' : 'nav-menu'}>
-          <ul className='nav-menu-items' onClick={showSidebar}>
-            <li className='navbar-toggle'>
-              <Link to='#' className='menu-bars'>
-                <AiIcons.AiOutlineClose />
-              </Link>
-            </li>
-            {SidebarData.map((item, index) => {
-              return (
-                <li key={index} className={item.cName}>
-                  <Link to={item.path}>
-                    {item.icon}
-                    <span>{item.title}</span>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </nav>
-      </IconContext.Provider>
-    </>
-  );
-}
-
-export default Sidebar;
+            <CDBSidebarFooter style={{ textAlign: 'center' }}>
+            <div
+                style={{
+                padding: '20px 5px',
+                }}
+            >
+                <NavLink exact to="/logout" activeClassName="activeClicked" className="text-danger text-decoration-none">
+                <CDBSidebarMenuItem icon="sign-out-alt" className="text-start">Logout</CDBSidebarMenuItem>
+                </NavLink>
+            </div>
+            </CDBSidebarFooter>
+        </CDBSidebar>
+    );
+};
