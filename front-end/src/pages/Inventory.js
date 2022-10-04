@@ -1,10 +1,14 @@
 
 import React, { Component } from 'react';
-import Container from 'react-bootstrap/Container';
-import DataTable from '../components/DataTable';
-import Button from 'react-bootstrap/Button';
-import FormDialog from '../components/FormDialog'
-
+import CRUDTable,
+{
+  Fields,
+  Field,
+  CreateForm,
+  UpdateForm,
+  DeleteForm,
+} from 'react-crud-table';
+import '../style/inventory.css'
 
 
 
@@ -12,14 +16,224 @@ import FormDialog from '../components/FormDialog'
 export default class Inventory extends Component {
   render() {
 
+let products = [
+  {
+    id: 1,
+    productName: 'Drug',
+    catagory: 'vitamin',
+    cost: 50,
+    sell: 65,
+    title: 'Create an example',
+    description: 'Create an example of how to use the component',
+  },
+  {
+    id: 2,
+    productName: 'yaya',
+    catagory: 'water',
+    cost: 12,
+    sell: 20,
+    title: 'asdasdasdad',
+    description: 'Hi',
+  },
+  {
+    id: 3,
+    productName: 'cat',
+    catagory: 'fatcat',
+    cost: 2,
+    sell: 4,
+    title: 'asdasdasdad',
+    description: 'Hi',
+  },
+  {
+    id: 4,
+    productName: 'crystal',
+    catagory: 'water',
+    cost: 8,
+    sell: 10,
+    title: 'asssssssd',
+    description: 'Hi hi',
+  },
+  {
+    id: 5,
+    productName: 'lamp',
+    catagory: 'light',
+    cost: 100,
+    sell: 200,
+    title: 'asdasdasdadsssssss',
+    description: 'Hi12312312',
+  }
+];
+
+const SORTERS = {
+  NUMBER_ASCENDING: mapper => (a, b) => mapper(a) - mapper(b),
+  NUMBER_DESCENDING: mapper => (a, b) => mapper(b) - mapper(a),
+  STRING_ASCENDING: mapper => (a, b) => mapper(a).localeCompare(mapper(b)),
+  STRING_DESCENDING: mapper => (a, b) => mapper(b).localeCompare(mapper(a)),
+};
+
+const getSorter = (data) => {
+  const mapper = x => x[data.field];
+  let sorter = SORTERS.STRING_ASCENDING(mapper);
+
+  if (data.field === 'id') {
+    sorter = data.direction === 'ascending' ?
+      SORTERS.NUMBER_ASCENDING(mapper) : SORTERS.NUMBER_DESCENDING(mapper);
+  } else {
+    sorter = data.direction === 'ascending' ?
+      SORTERS.STRING_ASCENDING(mapper) : SORTERS.STRING_DESCENDING(mapper);
+  }
+
+  return sorter;
+};
+
+let count = products.length;
+const service = {
+  fetchItems: (payload) => {
+    let result = Array.from(products);
+    result = result.sort(getSorter(payload.sort));
+    return Promise.resolve(result);
+  },
+  create: (product) => {
+    count += 1;
+    products.push({
+      ...product,
+      id: count,
+    });
+    return Promise.resolve(product);
+  },
+  update: (data) => {
+    const product = products.find(t => t.id === data.id);
+    product.title = data.title;
+    product.description = data.description;
+    return Promise.resolve(product);
+  },
+  delete: (data) => {
+    const product = products.find(t => t.id === data.id);
+    products = products.filter(t => t.id !== product.id);
+    return Promise.resolve(product);
+  },
+};
+
+const styles = {
+  container: { margin: 'auto', width: 'fit-content' },
+};
+
+const Example = () => (
+  <div style={styles.container}>
+    <CRUDTable
+      caption="Inventory"
+      fetchItems={payload => service.fetchItems(payload)}
+    >
+      <Fields>
+        <Field
+          name="id"
+          label="Id"
+          hideInCreateForm
+          readOnly
+        />
+        <Field
+          name="productName"
+          label="Product Name"
+        />
+        <Field
+          name="catagory"
+          label="Catagory"
+        />
+        <Field
+          name="cost"
+          label="Cost Price"   
+        />
+        <Field
+          name="sell"
+          label="Sell price"
+        />
+      </Fields>
+      <CreateForm
+        title="Add a new product"
+        message="Create a new product"
+        trigger="+ADD Product"           //btn create Form 
+        onSubmit={product => service.create(product)}
+        submitText="Create"
+        validate={(values) => {
+          const errors = {};
+          if (!values.productName) {
+            errors.productName = 'Please, provide product name';
+          }
+
+          if (!values.catagory) {
+            errors.catagory = 'Please, provide catagory';
+          }
+
+          if (!values.cost) {
+            errors.cost = 'Please, provide cost price';
+          }
+
+          if (!values.sell) {
+            errors.sell = 'Please, provide sell price';
+          }
+
+
+          return errors;
+        }}
+      />
+
+      <UpdateForm
+        title="Update Product"
+        message="Update product"
+        trigger="Update"
+        onSubmit={product => service.update(product)}
+        submitText="Update"
+        validate={(values) => {
+          const errors = {};
+
+          if (!values.id) {
+            errors.id = 'Please, provide id';
+          }
+
+          if (!values.productName) {
+            errors.productName = 'Please, provide product name';
+          }
+
+          if (!values.catagory) {
+            errors.catagory = 'Please, provide catagory';
+          }
+
+          if (!values.cost) {
+            errors.cost = 'Please, provide cost price';
+          }
+
+          if (!values.sell) {
+            errors.sell = 'Please, provide sell price';
+          }
+
+
+          return errors;
+        }}
+      />
+
+      <DeleteForm
+        title="delete product"
+        message="Are you sure you want to delete the product?"
+        trigger="Delete"
+        onSubmit={task => service.delete(task)}
+        submitText="Delete"
+        validate={(values) => {
+          const errors = {};
+          if (!values.id) {
+            errors.id = 'Please, provide id';
+          }
+          return errors;
+        }}
+      />
+    </CRUDTable>
+  </div>
+);
+
+Example.propTypes = {};
+
     return (
       <>
-      <div style={{display: 'flex',justifyContent: 'end'}}>
-      
-      <FormDialog/>
-      </div>
-      
-      <DataTable />
+      <Example/>
       
       </>
       // <Container>

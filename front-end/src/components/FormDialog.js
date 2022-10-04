@@ -8,9 +8,36 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import FormGroup from '@mui/material/FormGroup';
 import MuiGrid from '@mui/material/Grid';
+import tasks from "../pages/Sales";
+import CRUDTable,
+{
+  Fields,
+  Field,
+  CreateForm,
+  UpdateForm,
+  DeleteForm,
+} from 'react-crud-table';
+
 
 export default function FormDialog() {
   const [open, setOpen] = React.useState(false);
+  let count = tasks.length;
+  
+
+  const service = {
+    fetchItems: (payload) => {
+      let result = Array.from(tasks);
+      return Promise.resolve(result);
+    },
+    create: (task) => {
+      count += 1;
+      tasks.push({
+        ...task,
+        id: count,
+      });
+      return Promise.resolve(task);
+    }
+  }
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -26,49 +53,46 @@ export default function FormDialog() {
         +New Item
       </Button>
       <Dialog open={open} onClose={onCancelChanges} aria-labelledby="form-dialog-title">
-    <DialogTitle id="form-dialog-title">Employee Details</DialogTitle>
-    <DialogContent>
-      <MuiGrid container spacing={3}>
-        <MuiGrid item xs={6}>
-          <FormGroup>
+    <DialogTitle id="form-dialog-title">Add a new Product</DialogTitle>
+    <DialogContent 
+            validate={(values) => {
+              const errors = {};
+              if (!values.title) {
+                errors.title = 'Please, provide task\'s title';
+              }
+    
+              if (!values.description) {
+                errors.description = 'Please, provide task\'s description';
+              }
+    
+              return errors;
+            }}>
+      <MuiGrid container spacing={10}>
+        
+        <MuiGrid item xs={10}>
+          <FormGroup  caption="Tasks"
+          fetchItems={payload => service.fetchItems(payload)}>
             <TextField
-              margin="normal"
-              name="productName"
-              label="Produc tName"
+               name="id"
+               label="Id"
+               hideInCreateForm
+               readOnly
        
             />
             <TextField
-              margin="normal"
-              name="catagory"
-              label="Catagory"
+              name="title"
+              label="Title"
+              placeholder="Title"
        
             />
             <TextField
-              margin="normal"
-              name="cost"
-              label="Cost"
+              name="description"
+              label="Description"
             />
             <TextField
               margin="normal"
               name="sell"
               label="Sell"
-            />
-          </FormGroup>
-        </MuiGrid>
-        <MuiGrid item xs={6}>
-          <FormGroup>
-            <TextField
-              margin="normal"
-              name="lastName"
-              label="Last Name"
-           
-            />
-
-            <TextField
-              margin="normal"
-              name="phone"
-              label="Phone"
-        
             />
           </FormGroup>
         </MuiGrid>
@@ -78,7 +102,7 @@ export default function FormDialog() {
       <Button onClick={onCancelChanges} color="secondary">
         Cancel
       </Button>
-      <Button onClick={onCancelChanges} color="primary">
+      <Button onSubmit={task => service.create(task)} color="primary">
         Save
       </Button>
     </DialogActions>
