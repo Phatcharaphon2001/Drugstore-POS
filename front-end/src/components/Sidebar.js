@@ -30,7 +30,7 @@ export default function Sidebar() {
                 <NavLink exact to="/inventory" activeClassName="activeClicked">
                 <CDBSidebarMenuItem icon="box">Inventory</CDBSidebarMenuItem>
                 </NavLink>
-                <NavLink exact to="/user" activeClassName="activeClicked">
+                <NavLink exact to="/users" activeClassName="activeClicked">
                 <CDBSidebarMenuItem icon="user">Users</CDBSidebarMenuItem>
                 </NavLink>
                 <NavLink exact to="/report" activeClassName="activeClicked">

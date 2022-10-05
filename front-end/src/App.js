@@ -10,7 +10,7 @@ import Home from './pages/Home';
 import Inventory from './pages/Inventory';
 import Report from './pages/Report';
 import Sales from './pages/Sales';
-import User from './pages/User';
+import Users from './pages/Users';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -29,7 +29,7 @@ function App() {
             <Route path='/inventory' element={<Inventory/>}/>
             <Route path='/report' element={<Report/>}/>
             <Route path='/sales' element={<Sales/>}/>
-            <Route path='/user' element={<User/>}/>
+            <Route path='/users' element={<Users/>}/>
           </Routes>
         </div>
       </Stack>

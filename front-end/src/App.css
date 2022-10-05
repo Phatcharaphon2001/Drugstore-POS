@@ -6,3 +6,10 @@ body {
   height: 100vh;
   display: flex;
 }
+
+.user {
+  display: flex;
+  width: 600px;
+  justify-content: space-between;
+  margin: 5px;
+}
