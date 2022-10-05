@@ -79,13 +79,13 @@ export default class Sales extends Component {
         <div className='btn-group-1 d-flex justify-content-md-around mb-2'>
         <Button variant="danger" size="lg">Cancel</Button>{' '}
         <Button variant="warning" size="lg">Clear</Button>{' '}
-        <Button variant="primary" size="lg">ADD to cart</Button>{' '}
+        <Button variant="primary" size="lg" type="submit" >ADD to cart</Button>{' '}
         </div>
         <hr/>
         <h2 className='fw-bold text-center'>Total</h2>
         <h2 className='total-price display-1 text-center mb-0'>568.00</h2>
         <div className='text-center mt-0 fw-italic mb-3'>(ห้าร้อยหกสิบแปดบาทถ้วน)</div>
-        <button type="submit" class="btn btn-success" style={{width: '100%', height: '80px', fontSize: '40px'}}>SUMMARY BILL</button>
+        <button class="btn btn-success" style={{width: '100%', height: '80px', fontSize: '40px'}}>SUMMARY BILL</button>
         </Form>
         </Col>
         </Card.Body>
