@@ -30,6 +30,7 @@
     "react-router-dom": "^6.4.1",
     "react-scripts": "5.0.1",
     "sweetalert2": "^11.4.37",
+    "react-virtualized": "^9.22.3",
     "web-vitals": "^2.1.4",
     "yarn": "^1.22.19"
   },
