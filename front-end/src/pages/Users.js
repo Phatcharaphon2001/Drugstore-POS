@@ -99,6 +99,7 @@ export default function Users() {
       <Table striped hover size="sm">
         <thead>
           <tr>
+            <th>ID</th>
             <th>Name</th>
             <th>Email</th>
             <th></th>

@@ -27,6 +27,7 @@ export const User = ({ name, email, id, onEdit, onDelete }) => {
             </form>
         ) : (
             <>
+            <td className="user-id">{id}</td>
             <td className="user-name">{name}</td>
             <td className="user-email">{email}</td>
             <td>
