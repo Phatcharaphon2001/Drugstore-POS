@@ -50,7 +50,7 @@ export default class Home extends Component {
                 </Link>
               </Col>
               <Col xs={12} md={6} lg={3}>
-                <Link to="/user" className="text-decoration-none">
+                <Link to="/users" className="text-decoration-none">
                   <Card  className="w-100 mb-3" bg="warning" text="dark">
                     <Card.Body>
                       <Card.Title className="display-1"><IoIcons.IoMdPeople/></Card.Title>
