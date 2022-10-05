@@ -8,7 +8,7 @@ import CRUDTable,
   UpdateForm,
   DeleteForm,
 } from 'react-crud-table';
-import '../style/inventory.css'
+
 
 
 
@@ -75,14 +75,13 @@ const getSorter = (data) => {
   const mapper = x => x[data.field];
   let sorter = SORTERS.STRING_ASCENDING(mapper);
 
-  if (data.field === 'id') {
+  if (data.field === 'id'|| data.field === "cost"|| data.field === "sell") {
     sorter = data.direction === 'ascending' ?
       SORTERS.NUMBER_ASCENDING(mapper) : SORTERS.NUMBER_DESCENDING(mapper);
   } else {
     sorter = data.direction === 'ascending' ?
       SORTERS.STRING_ASCENDING(mapper) : SORTERS.STRING_DESCENDING(mapper);
   }
-
   return sorter;
 };
 
@@ -145,6 +144,7 @@ const Example = () => (
         <Field
           name="cost"
           label="Cost Price"   
+          
         />
         <Field
           name="sell"
