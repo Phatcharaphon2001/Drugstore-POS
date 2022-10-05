@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import Button from "react-bootstrap/Button";
 export const User = ({ name, email, id, onEdit, onDelete }) => {
     const [isEdit, setIsEdit] = useState(false);
 
@@ -18,23 +18,23 @@ export const User = ({ name, email, id, onEdit, onDelete }) => {
     };
 
     return (
-        <div>
+        <tr>
         {isEdit ? (
             <form onSubmit={handleOnEditSubmit}>
-            <input placeholder="Name" name="name" defaultValue={name} />
-            <input placeholder="Email" name="email" defaultValue={email} />
-            <button onSubmit={handleOnEditSubmit}>Save</button>
+                <td><input placeholder="Name" name="name" defaultValue={name} /></td>
+                <td><input placeholder="Email" name="email" defaultValue={email} /></td>
+                <td><button onSubmit={handleOnEditSubmit}>Save</button></td>
             </form>
         ) : (
-            <div className="user">
-            <span className="user-name">{name}</span>
-            <span className="user-email">{email}</span>
-            <div className="d-none">
-                <button onClick={handleEdit}>Edit</button>
-                <button onClick={handleDelete}>Delete</button>
-            </div>
-            </div>
+            <>
+            <td className="user-name">{name}</td>
+            <td className="user-email">{email}</td>
+            <td>
+                <Button varient="info" >Edit</Button>{' '}
+                <Button variant="danger" >Delete</Button>
+            </td>
+            </>
         )}
-        </div>
+        </tr>
     );
     };

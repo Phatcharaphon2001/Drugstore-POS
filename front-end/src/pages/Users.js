@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { User } from "../components/User";
 import { AddUser } from "../components/AddUser";
-
+import Table from "react-bootstrap/Table";
+import Container from "react-bootstrap/Container";
 export default function Users() {
   const [users, setUsers] = useState([]);
 
@@ -91,19 +92,32 @@ export default function Users() {
   };
 
   return (
+    <Container className="p-3">
     <div className="App">
       <h1>Users</h1>
       <AddUser onAdd={onAdd} />
-      {users.map((user) => (
-        <User
-          id={user.id}
-          key={user.id}
-          name={user.displayname}
-          email={user.email}
-          onEdit={onEdit}
-          onDelete={onDelete}
-        />
-      ))}
+      <Table striped hover size="sm">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.map((user) => (
+            <User
+              id={user.id}
+              key={user.id}
+              name={user.displayname}
+              email={user.email}
+              onEdit={onEdit}
+              onDelete={onDelete}
+            />
+          ))}
+        </tbody>
+      </Table>
     </div>
+    </Container>
   );
 }
