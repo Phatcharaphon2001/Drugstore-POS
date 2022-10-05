@@ -103,8 +103,11 @@ const service = {
   },
   update: (data) => {
     const product = products.find(t => t.id === data.id);
-    product.title = data.title;
-    product.description = data.description;
+    product.productName = data.productName;
+    product.catagory = data.catagory;
+    product.cost = data.cost;
+    product.sell = data.sell;
+    
     return Promise.resolve(product);
   },
   delete: (data) => {
