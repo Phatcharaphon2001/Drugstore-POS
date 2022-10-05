@@ -8,7 +8,7 @@ import CRUDTable,
   UpdateForm,
   DeleteForm,
 } from 'react-crud-table';
-
+import "../style/inventory.css"
 
 
 
