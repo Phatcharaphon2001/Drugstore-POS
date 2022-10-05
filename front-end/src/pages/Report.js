@@ -7,6 +7,7 @@ export default class Report extends Component {
   render() {
     return (
       <Container>
+      <br></br>
 
       <ReportHead/>
 

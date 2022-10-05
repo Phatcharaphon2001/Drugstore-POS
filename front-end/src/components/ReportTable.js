@@ -144,14 +144,19 @@ const VirtualizedTable = withStyles(styles)(MuiVirtualizedTable);
 // ---
 
 const sample = [
-  [1, 'Product1', 'Drug', 20.00, 25.00, 4,'060822', 100.00],
+  [1, 'Product1', 'Drug', 20.00, 25.00, 4,'020822', 100.00],
   [2, 'Product2', 'Drug', 10.00, 12.00, 5,'060822', 60.00],
-  [3, 'Product3', 'Drug', 15.00, 20.00, 7,'060822', 140.00],
-  [4, 'Product4', 'Drug', 8.00, 10.00, 2,'060822', 20.00],
-  [5, 'Product5', 'Drug', 33.00, 35.00, 2,'060822', 70.00],
-  [6, 'Product6', 'Drug', 10.00, 15.00, 3,'060822', 45.00],
+  [3, 'Product3', 'Drug', 15.00, 20.00, 7,'070822', 140.00],
+  [4, 'Product4', 'Drug', 8.00, 10.00, 2,'070822', 20.00],
+  [5, 'Product5', 'Drug', 33.00, 35.00, 2,'080822', 70.00],
+  [6, 'Product6', 'Drug', 10.00, 15.00, 3,'060922', 45.00],
   [7, 'Product7', 'Candy', 2.00, 5.00, 2,'060822', 10.00],
   [8, 'Product8', 'Drink', 11.00, 13.00, 3,'060822', 39.00],
+  [9, 'Product9', 'Drink', 11.00, 13.00, 3,'060822', 39.00],
+  [10, 'Product10', 'A', 11.00, 13.00, 3,'060822', 39.00],
+  [11, 'Product11', 'Demo', 11.00, 13.00, 3,'060822', 39.00],
+  [12, 'Product12', 'Test', 11.00, 13.00, 3,'060822', 39.00],
+  [13, 'Product13', 'milk', 11.00, 13.00, 3,'060822', 39.00],
 ];
 
 function createData(id, productName, category, cost, selling, purchased, date, sale) {
@@ -169,6 +174,11 @@ rows.push(createData(...sample[4]));
 rows.push(createData(...sample[5]));
 rows.push(createData(...sample[6]));
 rows.push(createData(...sample[7]));
+rows.push(createData(...sample[8]));
+rows.push(createData(...sample[9]));
+rows.push(createData(...sample[10]));
+rows.push(createData(...sample[11]));
+rows.push(createData(...sample[12]));
 
 // for (let i = 1; i < 200; i += 1) {
 //   const randomSelection = sample[Math.floor(Math.random() * sample.length)];
@@ -177,7 +187,7 @@ rows.push(createData(...sample[7]));
 
 export default function ReactVirtualizedTable() {
   return (
-    <Paper style={{ height: 400, width: '100%' }}>
+    <Paper style={{ height: 500, width: '100%' }}>
       <VirtualizedTable
         rowCount={rows.length}
         rowGetter={({ index }) => rows[index]}
