@@ -1,253 +1,361 @@
-
-import React, { Component } from 'react';
-import CRUDTable,
-{
-  Fields,
-  Field,
-  CreateForm,
-  UpdateForm,
-  DeleteForm,
-} from 'react-crud-table';
-import "../style/inventory.css"
-
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/esm/Button";
+import Form from "react-bootstrap/Form";
+import ReadInventory from "../components/ReadInventory";
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Table from 'react-bootstrap/Table';
 
 
-
-export default class Inventory extends Component {
-  render() {
-
-let products = [
-  {
-    id: 1,
-    productName: 'Drug',
-    catagory: 'vitamin',
-    cost: 50,
-    sell: 65,
-    title: 'Create an example',
-    description: 'Create an example of how to use the component',
-  },
-  {
-    id: 2,
-    productName: 'yaya',
-    catagory: 'water',
-    cost: 12,
-    sell: 20,
-    title: 'asdasdasdad',
-    description: 'Hi',
-  },
-  {
-    id: 3,
-    productName: 'cat',
-    catagory: 'fatcat',
-    cost: 2,
-    sell: 4,
-    title: 'asdasdasdad',
-    description: 'Hi',
-  },
-  {
-    id: 4,
-    productName: 'crystal',
-    catagory: 'water',
-    cost: 8,
-    sell: 10,
-    title: 'asssssssd',
-    description: 'Hi hi',
-  },
-  {
-    id: 5,
-    productName: 'lamp',
-    catagory: 'light',
-    cost: 100,
-    sell: 200,
-    title: 'asdasdasdadsssssss',
-    description: 'Hi12312312',
-  }
-];
-
-const SORTERS = {
-  NUMBER_ASCENDING: mapper => (a, b) => mapper(a) - mapper(b),
-  NUMBER_DESCENDING: mapper => (a, b) => mapper(b) - mapper(a),
-  STRING_ASCENDING: mapper => (a, b) => mapper(a).localeCompare(mapper(b)),
-  STRING_DESCENDING: mapper => (a, b) => mapper(b).localeCompare(mapper(a)),
-};
-
-const getSorter = (data) => {
-  const mapper = x => x[data.field];
-  let sorter = SORTERS.STRING_ASCENDING(mapper);
-
-  if (data.field === 'id'|| data.field === "cost"|| data.field === "sell") {
-    sorter = data.direction === 'ascending' ?
-      SORTERS.NUMBER_ASCENDING(mapper) : SORTERS.NUMBER_DESCENDING(mapper);
-  } else {
-    sorter = data.direction === 'ascending' ?
-      SORTERS.STRING_ASCENDING(mapper) : SORTERS.STRING_DESCENDING(mapper);
-  }
-  return sorter;
-};
-
-let count = products.length;
-const service = {
-  fetchItems: (payload) => {
-    let result = Array.from(products);
-    result = result.sort(getSorter(payload.sort));
-    return Promise.resolve(result);
-  },
-  create: (product) => {
-    count += 1;
-    products.push({
-      ...product,
-      id: count,
-    });
-    return Promise.resolve(product);
-  },
-  update: (data) => {
-    const product = products.find(t => t.id === data.id);
-    product.productName = data.productName;
-    product.catagory = data.catagory;
-    product.cost = data.cost;
-    product.sell = data.sell;
-    
-    return Promise.resolve(product);
-  },
-  delete: (data) => {
-    const product = products.find(t => t.id === data.id);
-    products = products.filter(t => t.id !== product.id);
-    return Promise.resolve(product);
-  },
-};
-
-const styles = {
-  container: { margin: 'auto', width: 'fit-content' },
-};
-
-const Example = () => (
-  <div style={styles.container}>
-    <CRUDTable
-      caption="Inventory"
-      fetchItems={payload => service.fetchItems(payload)}
-    >
-      <Fields>
-        <Field
-          name="id"
-          label="Id"
-          hideInCreateForm
-          readOnly
-        />
-        <Field
-          name="productName"
-          label="Product Name"
-        />
-        <Field
-          name="catagory"
-          label="Catagory"
-        />
-        <Field
-          name="cost"
-          label="Cost Price"   
-          
-        />
-        <Field
-          name="sell"
-          label="Sell price"
-        />
-      </Fields>
-      <CreateForm
-        title="Add a new product"
-        message="Create a new product"
-        trigger="+ADD Product"           //btn create Form 
-        onSubmit={product => service.create(product)}
-        submitText="Create"
-        validate={(values) => {
-          const errors = {};
-          if (!values.productName) {
-            errors.productName = 'Please, provide product name';
-          }
-
-          if (!values.catagory) {
-            errors.catagory = 'Please, provide catagory';
-          }
-
-          if (!values.cost) {
-            errors.cost = 'Please, provide cost price';
-          }
-
-          if (!values.sell) {
-            errors.sell = 'Please, provide sell price';
-          }
+const Inventory = () => {
+  const [products, setProducts] = useState([]);
 
 
-          return errors;
-        }}
-      />
+  //Delete Product
+  const handleDelete = (e) => {
+    e.preventDefault();
+    const newProducts = [...products];
+    const formIndex = products.findIndex((product) => product.id === editId);
+    newProducts.splice(formIndex, 1);
+    setProducts(newProducts);
+    handleCloseEdit();
+  
+  };
 
-      <UpdateForm
-        title="Update Product"
-        message="Update product"
-        trigger="Update"
-        onSubmit={product => service.update(product)}
-        submitText="Update"
-        validate={(values) => {
-          const errors = {};
-
-          if (!values.id) {
-            errors.id = 'Please, provide id';
-          }
-
-          if (!values.productName) {
-            errors.productName = 'Please, provide product name';
-          }
-
-          if (!values.catagory) {
-            errors.catagory = 'Please, provide catagory';
-          }
-
-          if (!values.cost) {
-            errors.cost = 'Please, provide cost price';
-          }
-
-          if (!values.sell) {
-            errors.sell = 'Please, provide sell price';
-          }
-
-
-          return errors;
-        }}
-      />
-
-      <DeleteForm
-        title="delete product"
-        message="Are you sure you want to delete the product?"
-        trigger="Delete"
-        onSubmit={task => service.delete(task)}
-        submitText="Delete"
-        validate={(values) => {
-          const errors = {};
-          if (!values.id) {
-            errors.id = 'Please, provide id';
-          }
-          return errors;
-        }}
-      />
-    </CRUDTable>
-  </div>
-);
-
-Example.propTypes = {};
-
-    return (
-      <>
-      <Example/>
-      
-      </>
-      // <Container>
-      //   <h1>Inventory</h1>
-      //     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pulvinar aliquam ante, ut euismod felis malesuada vel. In nec gravida lacus. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In maximus ornare odio non vestibulum. Maecenas sed accumsan quam. Quisque id finibus urna, eget elementum turpis. Cras convallis lorem non lectus dapibus rhoncus. Nulla at massa augue. Etiam lacus elit, malesuada vel ipsum consequat, volutpat molestie leo. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas feugiat euismod laoreet. Donec feugiat risus libero, eu euismod risus auctor a. Morbi fermentum elit non nisl sodales mattis ut convallis lorem. Morbi mattis malesuada massa, vel elementum dolor auctor quis. Nunc varius neque a magna pulvinar vestibulum.</p>
-      //     <p>Cras hendrerit turpis a nibh consequat faucibus. Vestibulum bibendum nec nibh eu tempor. Mauris at velit nunc. Aliquam consectetur suscipit magna nec lobortis. Nunc vel diam eget tellus blandit imperdiet ut eu erat. In aliquet sodales sapien, eu pharetra lorem pulvinar vitae. Cras ut dapibus turpis. Vestibulum sagittis rutrum lectus, ac luctus metus faucibus in. Cras semper erat ut ex varius, a dapibus urna vehicula. Vivamus ultricies dolor et erat pulvinar, at pharetra ligula ornare. Aliquam erat volutpat. Nunc bibendum hendrerit ante, et venenatis eros auctor ut. Cras vitae pulvinar justo, sed auctor elit. Integer quis nibh nec sem ultrices mollis quis vel tellus.</p>
-      //     <p>Interdum et malesuada fames ac ante ipsum primis in faucibus. Nunc ac sapien a erat aliquet faucibus in in nunc. Vivamus venenatis in est at iaculis. Curabitur est felis, gravida nec dui in, pretium malesuada urna. Pellentesque tortor diam, laoreet et odio vel, hendrerit venenatis metus. Praesent a augue a leo tincidunt vestibulum non eu mi. Sed non dolor non lectus porttitor feugiat sit amet id enim. Suspendisse malesuada erat eget quam tempus tempus vel sed mi. Ut dictum felis consequat, viverra felis eu, maximus sem. Suspendisse porta odio id neque mollis, ac consequat nunc porttitor. Integer vel dui dapibus lectus consectetur tempus vitae ac purus. Quisque non ultricies massa, at condimentum nibh. Praesent quis ligula sem. Nullam tincidunt ultricies feugiat. Maecenas magna quam, pretium laoreet congue sed, pellentesque non enim. Quisque accumsan tortor justo.</p>
-      //     <p>Sed id ipsum at sapien tempus vehicula vel eu velit. Etiam malesuada lacinia dolor, a consectetur ipsum tempor pretium. Duis sed orci odio. Aenean euismod metus consectetur blandit rutrum. Curabitur gravida eleifend feugiat. Cras consectetur felis et nisi rutrum aliquet. Sed a sollicitudin velit. Nam ac risus sed enim placerat eleifend. In id elit felis. Duis ornare eros vel dui malesuada convallis.</p>
-      //     <p>Aenean volutpat eu odio nec sagittis. Phasellus interdum scelerisque mi, a vulputate sem varius non. Phasellus ornare, justo et tempor ornare, orci nisi iaculis lectus, quis lobortis eros odio eget magna. Integer in quam sed risus mattis sodales quis in turpis. Curabitur id lorem eu libero mattis pharetra. Aliquam pretium nunc nunc. In porta eu enim ut volutpat. Nunc magna dolor, lacinia sed eleifend eget, vulputate id felis. Aliquam odio est, rhoncus eu egestas quis, imperdiet in nisi. Donec malesuada sagittis turpis, ac scelerisque ligula aliquet ut. Integer molestie porta consectetur. Morbi dapibus, purus sit amet volutpat volutpat, sem dolor vulputate mauris, et tempus sapien nibh sed erat. Nulla cursus ligula nisi, vitae vehicula augue congue ac. Quisque in elit mi.</p>
-      // </Container>
-    )
-  }
-}
+  //get data from backend
+  const fecthUrl = "http://localhost:3000/product";
+  useEffect(() => {
+    async function fecthData() {
+      const data = await axios.get(fecthUrl);
+      setProducts(data.data);
+      //console.log(data);
+    }
+    fecthData();
+  }, []);
  
+
+  const [showADD, setShowADD] = useState(false);
+  const handleCloseADD = () => setShowADD(false);
+  const handleShowADD = () => setShowADD(true);
+
+  const [showEdit, setShowEdit] = useState(false);
+  const handleCloseEdit = () => setShowEdit(false);
+  const handleShowEdit = () => setShowEdit(true);
+
+  const [addProduct, setAddProduct] = useState({
+    id: 11,
+    name: "",
+    expire: "",
+    cost: "",
+    sell: "",
+    total: 6,
+  });
+
+  //get ID
+  const [editId, setEditId] = useState(null);
+  const [editFormData, setEditFormData] = useState({
+    id: 12,
+    name: "",
+    expire: "",
+    cost: "",
+    sell: "",
+    total: 6,
+  });
+
+//get Form values
+  const handleAddProduct = (input) => (e) => {
+    e.preventDefault();
+    console.log(addProduct);
+    setAddProduct({ ...addProduct, [input]: e.target.value });
+  };
+
+//add product to table
+const handleToTable = (e) => {
+  e.preventDefault();
+  const newProduct = {
+    id: addProduct.id,
+    name: addProduct.name,
+    expire: addProduct.expire,
+    cost: addProduct.cost,
+    sell: addProduct.sell,
+    total: addProduct.total,
+  };
+  const newProducts = [...products, newProduct];
+  setProducts(newProducts);
+}
+
+  //Edit Data values
+  const handleEditProduct = (input) => (e) => {
+    e.preventDefault();
+    console.log(editFormData);
+    setEditFormData({ ...editFormData, [input]: e.target.value });
+  };
+
+  //edit modal data
+  const handleEditProductForm = (e, product) => {
+    e.preventDefault();
+    setEditId(product.id);
+    const  formVlues = {
+      id: product.id,
+      name: product.name,
+      expire: product.expire,
+      cost: product.cost,
+      sell: product.sell,
+      total: product.total,
+    }
+    setEditFormData(formVlues);
+    handleShowEdit();
+  };
+
+  //save form data
+  const handleFormSave = (e) => {
+    e.preventDefault();
+    const saveProduct = {
+      id: editId,
+      name: editFormData.name,
+      expire: editFormData.expire,
+      cost: editFormData.cost,
+      sell: editFormData.sell,
+      total: editFormData.total,
+    }
+    const newProducts = [...products];
+    const formIndex = products.findIndex((product) => product.id === editId);
+    newProducts[formIndex] = saveProduct;
+    setProducts(newProducts);
+    setEditId(null);
+  };
+
+  //Search Filter Data
+  const [searchQuery, setSearchQuery] = useState("");
+  function search() {
+    return products.filter(row => row.name.toLowerCase().indexOf(searchQuery.toLowerCase()) > -1);
+  };
+
+  return (
+    <>
+      <Container className="mt-3">
+        <Row className="justify-content-md-end">
+          <Col md="auto">
+            <Button variant="primary" onClick={handleShowADD}>
+               ADD Product +
+            </Button>
+          </Col>
+        </Row>
+      </Container>
+
+
+        <Form className="row g-3 ms-auto">
+          <div className="col-auto">
+            <Form.Control
+              type="text"
+              className="form-control ms-auto"
+              placeholder="search product name"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+        </Form>
+
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th scope="col">Product ID</th>
+            <th scope="col">Product Name</th>
+            <th scope="col">Expire</th>
+            <th scope="col">Cost Price</th>
+            <th scope="col">Sell Price</th>
+            <th scope="col">Total</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ReadInventory
+          products={search(products)}
+          handleEditProductForm={handleEditProductForm}
+          /> 
+        </tbody>
+      </Table>
+
+      {/*Add Modal */}
+      <Modal className="modal-add" show={showADD} onHide={handleCloseADD}>
+        <Modal.Header>
+          <Modal.Title>ADD Product</Modal.Title>
+        <Button
+          type="button"
+          className="btn-close"
+          onClick={handleCloseADD}
+        ></Button>
+        </Modal.Header>
+        <div className="modal-body">
+          <Form onSubmit={handleToTable}>
+            <Form.Group className="mb-3">
+              <Form.Label className="form-label">Product ID</Form.Label>
+              <input
+                type="text"
+                className="form-control"
+                name="id"
+                required
+                onChange={handleAddProduct("id")}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label className="form-label">Product Name</Form.Label>
+              <Form.Control
+                type="text"
+                className="form-control"
+                name="name"
+                placeholder="title"
+                required
+                onChange={handleAddProduct("name")}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label className="form-label">Expire</Form.Label>
+              <Form.Control
+                type="date"
+                className="form-control"
+                name="expire"
+                required
+                onChange={handleAddProduct("expire")}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label className="form-label">Cost Price</Form.Label>
+              <Form.Control
+                type="number"
+                className="form-control"
+                name="cost"
+                required
+                onChange={handleAddProduct("cost")}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label className="form-label">Sell Price</Form.Label>
+              <Form.Control
+                type="number"
+                className="form-control"
+                name="sell"
+                required
+                onChange={handleAddProduct("sell")}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label className="form-label">Total</Form.Label>
+              <Form.Control
+                type="number"
+                className="form-control"
+                name="total"
+                required
+                onChange={handleAddProduct("total")}
+              />
+            </Form.Group>
+            <Modal.Footer> 
+              <Button variant="secondary" onClick={handleCloseADD}>
+                Close
+              </Button>
+              <Button variant="success" type="submit">
+                ADD
+              </Button>
+            </Modal.Footer>
+          </Form>
+        </div>
+      </Modal>
+
+      {/*Edit Modal */}
+      <Modal className="modal-add" show={showEdit} onHide={handleCloseEdit}>
+        <Modal.Header>
+          <Modal.Title>Edit Product</Modal.Title>
+        <Button
+          type="button"
+          className="btn-close"
+          onClick={handleCloseEdit}
+        ></Button>
+        </Modal.Header>
+        <div className="modal-body">
+          <Form onSubmit={handleFormSave}>
+            <Form.Group className="mb-3">
+              <Form.Label className="form-label">Product ID</Form.Label>
+              <Form.Control
+                type="text"
+                className="form-control"
+                name="id"
+                required
+                value={editFormData.id}
+                disabled
+                onChange={handleEditProduct("id")}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label className="form-label">Product Name</Form.Label>
+              <Form.Control
+                type="text"
+                className="form-control"
+                name="name"
+                placeholder="Name"
+                required
+                value={editFormData.name}
+                onChange={handleEditProduct("name")}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label className="form-label">Expire</Form.Label>
+              <Form.Control
+                type="date"
+                className="form-control"
+                name="expire"
+                required
+                value={editFormData.expire}
+                onChange={handleEditProduct("expire")}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label className="form-label">Cost Price</Form.Label>
+              <Form.Control
+                type="number"
+                className="form-control"
+                name="cost"
+                required
+                value={editFormData.cost}
+                onChange={handleEditProduct("cost")}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label className="form-label">Sell Price</Form.Label>
+              <Form.Control
+                type="number"
+                className="form-control"
+                name="sell"
+                required
+                value={editFormData.sell}
+                onChange={handleEditProduct("sell")}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label className="form-label">Total</Form.Label>
+              <Form.Control
+                type="number"
+                className="form-control"
+                name="total"
+                required
+                value={editFormData.total}
+                onChange={handleEditProduct("total")}
+              />
+            </Form.Group>
+            <Modal.Footer>
+              <Button variant="danger" onClick={handleDelete} type="submit">
+                Delete Product
+              </Button>
+              <Button variant="success" type="submit">
+                Save
+              </Button>
+            </Modal.Footer>
+          </Form>
+        </div>
+      </Modal>
+    </>
+  );
+};
+export default Inventory;

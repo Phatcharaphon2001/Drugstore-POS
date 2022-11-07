@@ -1,0 +1,84 @@
+
+{
+"product": [
+  {
+    "id": 1,
+    "name": "Soup - Campbells, Creamy",
+    "expire": "3/24/2022",
+    "cost": "$7.28",
+    "sell": "$79.88",
+    "total": 1
+  }, 
+    {
+    "id": 2,
+    "name": "Pork - Ham Hocks - Smoked",
+    "expire": "12/27/2021",
+    "cost": "$60.00",
+    "sell": "$60.34",
+    "total": 2
+  }, 
+   {
+    "id": 3,
+    "name": "Schnappes Peppermint - Walker",
+    "expire": "7/23/2022",
+    "cost": "$67.46",
+    "sell": "$24.46",
+    "total": 3
+  },
+  {
+  "id": 4,
+  "name": "Muffin Chocolate Individual Wrap",
+  "expire": "10/23/2022",
+  "cost": "$52.15",
+  "sell": "$10.67",
+  "total": 4
+  }, 
+  {
+    "id": 5,
+    "name": "Crab - Imitation Flakes",
+    "expire": "2/5/2023",
+    "cost": "$19.03",
+    "sell": "$31.03",
+    "total": 5
+  }, 
+  {
+    "id": 6,
+    "name": "Sauce - Bernaise, Mix",
+    "expire": "11/18/2021",
+    "cost": "$97.34",
+    "sell": "$38.52",
+    "total": 6
+  }, 
+  {
+    "id": 7,
+    "name": "Jolt Cola - Red Eye",
+    "expire": "12/18/2021",
+    "cost": "$1.17",
+    "sell": "$40.95",
+    "total": 7
+  }, 
+  {
+    "id": 8,
+    "name": "Wheat - Soft Kernal Of Wheat",
+    "expire": "3/20/2023",
+    "cost": "$76.05",
+    "sell": "$77.77",
+    "total": 8
+  }, 
+  {
+    "id": 9,
+    "name": "Coffee - French Vanilla Frothy",
+    "expire": "5/12/2022",
+    "cost": "$81.77",
+    "sell": "$31.24",
+    "total": 9
+  }, 
+  {
+    "id": 10,
+    "name": "Wine - Prem Select Charddonany",
+    "expire": "7/19/2022",
+    "cost": "$89.50",
+    "sell": "$28.59",
+    "total": 10
+  }]
+}

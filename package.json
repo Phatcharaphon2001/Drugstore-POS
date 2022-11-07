@@ -2,8 +2,14 @@
   "name": "Drugstore-POS",
   "version": "1.0.0",
   "main": "index.js",
+  "scripts": {
+    "serve-json": "json-server --watch product.json",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "repository": "https://github.com/Phatcharaphon2001/Drugstore-POS.git",
   "author": "Phatcharaphon Chaisaenthao <phatcharaphon.c@kkumail.com>",
   "license": "MIT",
-  "dependencies": {}
+  "dependencies": {
+    "json-server": "^0.17.1"
+  }
 }

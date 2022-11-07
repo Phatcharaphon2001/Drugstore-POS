@@ -97,7 +97,7 @@
   }
   
   .crud-button {
-    background-color: #000;
+    background-color: rgb(255, 0, 0);
     min-height: 1rem;
     color: #fff;
     border-radius: 3px;
@@ -105,6 +105,7 @@
     border: none;
     font-size: 1rem;
     cursor: pointer;
+    
   }
   
   .crud-button--circular {
@@ -125,11 +126,14 @@
   
   .crud-button--positive {
     background-color: #21d05b;
+    display: flex;
+
   }
+
   
   .crud-button--positive:hover {
     background-color: #1da54a;
-    transition: all 1s;
+    transition: all 1s; 
   }
   
   .crud-button--negative {
@@ -148,7 +152,6 @@
     box-shadow: 2px 2px 5px 0 #c7c7c7;
   }
   .crud-table__row {
-    
   }
   .crud-table__header-cell {
     cursor: pointer;
@@ -159,11 +162,11 @@
     border-bottom: 1px solid rgba(34, 36, 38, 0.1);
   }
   
-  .crud-table__header {
-  }
+ 
   
   .crud-table__body {
     background-color: #fff;
+  
   }
   
   .crud-table__cell {
@@ -171,6 +174,7 @@
     padding: 0.5rem 1rem;
     border-left: 1px solid rgba(34, 36, 38, 0.1);
     border-bottom: 1px solid rgba(4, 21, 37, 0.1);
+  
   }
   
   .crud-table__cell-label {
@@ -185,6 +189,7 @@
     font-size: 1.5rem;
     text-align: center;
     font-weight: 600;
+    
   }
   
   .crud-table-pagination {
