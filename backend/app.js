@@ -8,13 +8,12 @@ const mongoServerURI = "mongodb://WAD:WAD@p0nd.ga:27017"
 
 const app = express();
 
-app.use(bodyParser.json()); // for parsing application/json
+app.use(express.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 // GET /user : return all users without password
 app.get('/user', function(req, res) {
     console.log(`GET /user`);
-    res.set("Content-Type", "application/json");
     async function run() {
         const client = new mongodb.MongoClient(mongoServerURI);
         try {
@@ -32,7 +31,6 @@ app.get('/user', function(req, res) {
 // GET /user/<id> : return a user without password
 app.get('/user/:id', function(req, res) {
     console.log(`GET /user/${req.params.id}`);
-    res.set("Content-Type", "application/json");
     async function run() {
         const client = new mongodb.MongoClient(mongoServerURI);
         try {
@@ -52,7 +50,6 @@ app.get('/user/:id', function(req, res) {
 // POST /user/update : need id, name, email, password => return the updated data -or- empty if not valid ID 
 app.post('/user/update', function(req, res) {
     console.log(`POST /user/update`);
-    res.set("Content-Type", "application/json");
     async function run() {
         const client = new mongodb.MongoClient(mongoServerURI);
         try {
@@ -90,18 +87,15 @@ app.post('/user/update', function(req, res) {
 // POST /user/add : need name, email, password => return the user data
 app.post('/user/add', function(req, res) {
     console.log(`POST /user/add`);
-    res.set("Content-Type", "application/json");
     async function run() {
         const client = new mongodb.MongoClient(mongoServerURI);
         try {
             const database = client.db('WAD');
             const users = database.collection('users');
             let data = {
-                $set: {
-                    name: req.body.name,
-                    email: req.body.email,
-                    password: md5(req.body.password)
-                }
+                name: req.body.name,
+                email: req.body.email,
+                password: md5(req.body.password)
             };
             
             if (req.body.email == undefined || req.body.email == null || req.body.email == ""
@@ -129,13 +123,15 @@ app.post('/user/add', function(req, res) {
 // POST /auth/login : need email, password => return a user without password
 app.post('/auth/login', function(req, res) {
     console.log(`POST /auth/login`);
-    res.set("Content-Type", "application/json");
+    console.log(req.body);
     async function run() {
         const client = new mongodb.MongoClient(mongoServerURI);
         try {
             const database = client.db('WAD');
             const users = database.collection('users');
-            const result = await users.findOne({email: req.body.email, password: req.body.password}, {projection:{password: 0}});
+            const result = await users.findOne({email: "p0ndja@gmail.com", password: "5b4a4067e9429bfc38364f9c761eb74a"}, {projection:{password: 0}});
+            console.log(md5(req.body.password));
+            console.log(result)
             res.end(JSON.stringify(result, null, 4));
         } catch (e) {
             res.end(JSON.stringify({}, null, 4));
@@ -149,7 +145,6 @@ app.post('/auth/login', function(req, res) {
 // GET /inventory : return all inventory items
 app.get('/inventory', function(req, res) {
     console.log(`GET /inventory`);
-    res.set("Content-Type", "application/json");
     async function run() {
         const client = new mongodb.MongoClient(mongoServerURI);
         try {
@@ -167,7 +162,6 @@ app.get('/inventory', function(req, res) {
 // GET /inventory/id/<id> : return a inventory item
 app.get('/inventory/id/:id', function(req, res) {
     console.log(`GET /inventory/${req.params.id}`);
-    res.set("Content-Type", "application/json");
     async function run() {
         const client = new mongodb.MongoClient(mongoServerURI);
         try {
@@ -185,7 +179,6 @@ app.get('/inventory/id/:id', function(req, res) {
 // GET /inventory/type/<type> : return all items in specified inventory type
 app.get('/inventory/type/:type', function(req, res) {
     console.log(`GET /inventory/${req.params.type}`);
-    res.set("Content-Type", "application/json");
     async function run() {
         const client = new mongodb.MongoClient(mongoServerURI);
         try {
@@ -203,7 +196,6 @@ app.get('/inventory/type/:type', function(req, res) {
 // POST /inventory/update : need id, name, email, password => return the updated data -or- empty if not valid ID 
 app.post('/inventory/update', function(req, res) {
     console.log(`POST /inventory/update`);
-    res.set("Content-Type", "application/json");
     async function run() {
         const client = new mongodb.MongoClient(mongoServerURI);
         try {
@@ -240,18 +232,15 @@ app.post('/inventory/update', function(req, res) {
 // POST /inventory/add : need name, email, password => return the inventory data
 app.post('/inventory/add', function(req, res) {
     console.log(`POST /inventory/add`);
-    res.set("Content-Type", "application/json");
     async function run() {
         const client = new mongodb.MongoClient(mongoServerURI);
         try {
             const database = client.db('WAD');
             const inventory = database.collection('inventory');
             let data = {
-                $set: {
-                    name: req.body.name,
-                    type: req.body.type,
-                    lot: req.body.lot
-                }
+                name: req.body.name,
+                type: req.body.type,
+                lot: req.body.lot
             };
             const result = await inventory.insertOne(data);
             if (result.acknowledged) {
@@ -266,6 +255,12 @@ app.post('/inventory/add', function(req, res) {
         }
     }
     run().catch(console.dir);
+});
+
+app.post('/json', function(req, res) {
+    console.log(`POST /json`);
+    req.body.list.forEach((e) => console.log(e));
+    res.end(JSON.stringify({}));
 });
 
 let server = app.listen(27777, function() {
