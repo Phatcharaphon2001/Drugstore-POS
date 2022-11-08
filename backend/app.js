@@ -206,6 +206,7 @@ app.post('/inventory/update', function(req, res) {
                     _id: req.body.id,
                     name: req.body.name,
                     type: req.body.type,
+                    unit: req.body.unit,
                     lot: req.body.lot
                 }
             };
@@ -215,7 +216,7 @@ app.post('/inventory/update', function(req, res) {
             } else {
                 const result = await inventory.updateOne({_id: mongodb.ObjectId(req.body.id)}, data,{upsert: 0});
                 if (result.modifiedCount > 0) {
-                    res.end(JSON.stringify({id: req.body.id, name: req.body.name, type: req.body.type, lot: req.body.lot}, null, 4));
+                    res.end(JSON.stringify({id: req.body.id, name: req.body.name, type: req.body.type, unit: req.body.unit, lot: req.body.lot}, null, 4));
                 } else {
                     res.end(JSON.stringify({}, null, 4));
                 }
@@ -240,11 +241,12 @@ app.post('/inventory/add', function(req, res) {
             let data = {
                 name: req.body.name,
                 type: req.body.type,
+                unit: req.body.unit,
                 lot: req.body.lot
             };
             const result = await inventory.insertOne(data);
             if (result.acknowledged) {
-                res.end(JSON.stringify({id: result.insertedId, name: req.body.name, type: req.body.type, lot: req.body.lot}, null, 4));
+                res.end(JSON.stringify({id: result.insertedId, name: req.body.name, type: req.body.type, unit: req.body.unit, lot: req.body.lot}, null, 4));
             } else {
                 res.end(JSON.stringify({}, null, 4));
             }
