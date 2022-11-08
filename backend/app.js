@@ -110,8 +110,9 @@ app.post('/user/add', function(req, res) {
                 res.end(JSON.stringify({}, null, 4));
             } else {
                 const result = await users.insertOne(data);
-                if (result.modifiedCount > 0) {
-                    res.end(JSON.stringify({id: req.body.id, name: req.body.name, email: req.body.email}, null, 4));
+                console.log(result);
+                if (result.acknowledged) {
+                    res.end(JSON.stringify({id: result.insertedId, name: req.body.name, email: req.body.email}, null, 4));
                 } else {
                     res.end(JSON.stringify({}, null, 4));
                 }
