@@ -264,6 +264,5 @@ app.post('/json', function(req, res) {
 });
 
 let server = app.listen(27777, function() {
-    let port = server.address().port;
-    console.log("listening on port " + port);
+    console.log(`listening on 0.0.0.0:${server.address().port}`);
 });
