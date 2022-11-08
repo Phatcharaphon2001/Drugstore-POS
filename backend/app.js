@@ -105,7 +105,7 @@ app.post('/user/add', function(req, res) {
             };
             
             if (req.body.email == undefined || req.body.email == null || req.body.email == ""
-                || req.body.password == undefined || req.body.password == null || req.body.passworde == "") {
+                || req.body.password == undefined || req.body.password == null || req.body.password == "") {
                 //email & Password can't be empty
                 res.end(JSON.stringify({}, null, 4));
             } else {

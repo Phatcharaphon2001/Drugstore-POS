@@ -2,9 +2,9 @@ import axios from "axios";
 
 
 // POST authentication data
-// curl -d "username=p0ndja&password=P0ndJ@" -X POST http://localhost:27777/auth/login
+// curl -d "email=p0ndja@gmail.com&password=P0ndJ@" -X POST http://localhost:27777/auth/login
 axios.post('http://localhost:27777/auth/login', {
-    username: 'p0ndja',
+    email: 'p0ndja@gmail.com',
     password: 'P0ndJ@'
 })
 .then(function (response) {
@@ -16,11 +16,11 @@ axios.post('http://localhost:27777/auth/login', {
 
 
 // POST User update data
-// curl -d "id=636a81ca84d8b690c5a2f181&name=Palssssapon&username=p0ndja&password=P0ndJ@" -X POST http://localhost:27777/user/update
+// curl -d "id=636a81ca84d8b690c5a2f181&name=Palssssapon&email=p0ndja@gmail.com&password=P0ndJ@" -X POST http://localhost:27777/user/update
 axios.post('http://localhost:27777/auth/login', {
     id: "636a81ca84d8b690c5a2f181",
     name: "Palapon",
-    username: 'p0ndja',
+    email: 'p0ndja@gmail.com',
     password: 'P0ndJ@'
 })
 .then(function (response) {
@@ -29,3 +29,5 @@ axios.post('http://localhost:27777/auth/login', {
 .catch(function (error) {
     console.log(error);
 });
+
+// curl -d "name=Palapon&email=p0ndja@gmail.com&password=P0ndJ@" -X POST http://localhost:27777/user/add
