@@ -46,7 +46,11 @@ POST http://p0nd.ga:27777/inventory/update
 - lot
 
 โดยข้อมูล Lot จะเป็น JSON ที่มีข้อมูลปลีกย่อยลงไปอีก โดยมีข้อมูลตัวอย่างดังนี้
-`{lot: [{expDate: "2023-01-11", amount: 100}, {expDate: "2023-01-11", amount: 100}]}`
+`{lot: [{exp: "2022-12-01", amount: 10, price_origin: 5, price_sell: 10}, {exp: "2023-01-01", amount: 100, price_origin: 6, price_sell: 10}]}`
+- exp - วันที่หมดอายุ
+- amount - จำนวนคงเหลือ
+- price_origin - ราคาต้นทุน
+- price_sell - ราคาขาย
 
 อัปเดตข้อมูล Inventory ตาม ID
 POST http://p0nd.ga:27777/inventory/update

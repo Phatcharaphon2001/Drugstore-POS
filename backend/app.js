@@ -2,7 +2,6 @@ import express from "express";
 import axios from "axios";
 import mongodb from "mongodb";
 import bodyParser from 'body-parser';
-import md5 from "md5";
 
 const mongoServerURI = "mongodb://WAD:WAD@p0nd.ga:27017"
 
@@ -36,7 +35,7 @@ app.get('/user/:id', function(req, res) {
         try {
             const database = client.db('WAD');
             const users = database.collection('users');
-            const result = await users.find({_id: mongodb.ObjectId(req.params.id)}, {projection:{password: 0}}).toArray();
+            const result = await users.findOne({_id: mongodb.ObjectId(req.params.id)}, {projection:{password: 0}});
             res.end(JSON.stringify(result, null, 4));
         } catch (e) {
             res.end(JSON.stringify({}, null, 4));
@@ -71,7 +70,7 @@ app.post('/user/update', function(req, res) {
             } else {
                 const result = await users.updateOne({_id: mongodb.ObjectId(req.body.id)}, data,{upsert: 0});
                 if (result.modifiedCount > 0) {
-                    res.end(JSON.stringify({id: req.body.id, name: req.body.name, email: req.body.email}, null, 4));
+                    res.end(JSON.stringify({_id: req.body.id, name: req.body.name, email: req.body.email}, null, 4));
                 } else {
                     res.end(JSON.stringify({}, null, 4));
                 }
@@ -107,7 +106,7 @@ app.post('/user/add', function(req, res) {
                 const result = await users.insertOne(data);
                 console.log(result);
                 if (result.acknowledged) {
-                    res.end(JSON.stringify({id: result.insertedId, name: req.body.name, email: req.body.email}, null, 4));
+                    res.end(JSON.stringify({_id: result.insertedId, name: req.body.name, email: req.body.email}, null, 4));
                 } else {
                     res.end(JSON.stringify({}, null, 4));
                 }
@@ -214,7 +213,7 @@ app.post('/inventory/update', function(req, res) {
             } else {
                 const result = await inventory.updateOne({_id: req.body.id}, data,{upsert: 0});
                 if (result.modifiedCount > 0) {
-                    res.end(JSON.stringify({id: req.body.id, name: req.body.name, type: req.body.type, unit: req.body.unit, lot: req.body.lot}, null, 4));
+                    res.end(JSON.stringify({_id: req.body.id, name: req.body.name, type: req.body.type, unit: req.body.unit, lot: req.body.lot}, null, 4));
                 } else {
                     res.end(JSON.stringify({}, null, 4));
                 }
@@ -249,7 +248,7 @@ app.post('/inventory/add', function(req, res) {
             } else {
                 const result = await inventory.insertOne(data);
                 if (result.acknowledged) {
-                    res.end(JSON.stringify({id: req.body.id, name: req.body.name, type: req.body.type, unit: req.body.unit, lot: req.body.lot}, null, 4));
+                    res.end(JSON.stringify({_id: req.body.id, name: req.body.name, type: req.body.type, unit: req.body.unit, lot: req.body.lot}, null, 4));
                 } else {
                     res.end(JSON.stringify({}, null, 4));
                 }
