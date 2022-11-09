@@ -45,7 +45,7 @@ export default function Sidebar() {
                 padding: '20px 5px',
                 }}
             >
-                <NavLink exact to="/logout" activeClassName="activeClicked" className="text-danger text-decoration-none">
+                <NavLink exact to="/login" activeClassName="activeClicked" className="text-danger text-decoration-none">
                 <CDBSidebarMenuItem icon="sign-out-alt" className="text-start">Logout</CDBSidebarMenuItem>
                 </NavLink>
             </div>
