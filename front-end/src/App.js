@@ -16,6 +16,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Stack from 'react-bootstrap/Stack';
+import Login from './pages/Login';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
             <Route path='/report' element={<Report/>}/>
             <Route path='/sales' element={<Sales/>}/>
             <Route path='/users' element={<Users/>}/>
+            <Route path='/login' element={<Login/>}/>
           </Routes>
         </div>
       </Stack>
