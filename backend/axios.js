@@ -18,7 +18,7 @@ axios.post('http://localhost:27777/auth/login', {
 // POST User update data
 // curl -d "id=636a81ca84d8b690c5a2f181&name=Palssssapon&email=p0ndja@gmail.com&password=P0ndJ@" -X POST http://localhost:27777/user/update
 axios.post('http://localhost:27777/user/update', {
-    id: "636a81ca84d8b690c5a2f181",
+    _id: "636a81ca84d8b690c5a2f181",
     name: "Palapon",
     email: 'p0ndja@gmail.com',
     password: 'P0ndJ@'
@@ -34,7 +34,7 @@ axios.post('http://localhost:27777/user/update', {
 
 
 axios.post('http://localhost:27777/json', {
-    id: "636a81ca84d8b690c5a2f181",
+    _id: "636a81ca84d8b690c5a2f181",
     name: "Palapon",
     email: 'p0ndja@gmail.com',
     password: 'P0ndJ@',
@@ -50,7 +50,7 @@ axios.post('http://localhost:27777/json', {
 
 // POST Adding Item to Inventory DEMO
 axios.post('http://localhost:27777/inventory/add', {
-    id: "8850999321004",
+    _id: "8850999321004",
     name: "Singha Drinking Water",
     type: "Drinking Water",
     unit: "ขวด",
