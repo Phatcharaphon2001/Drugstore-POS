@@ -30,7 +30,7 @@ axios.post('http://localhost:27777/user/update', {
     console.log(error);
 });
 // NOTE: Add data use the same format, without ID
-// curl -d "name=Palapon&email=p0ndja@gmail.com&password=P0ndJ@" -X POST http://localhost:27777/user/add
+// curl -d "name=Palapon&email=palapon2545@gmail.com&password=P0ndJ@" -X POST http://localhost:27777/user/add
 
 
 axios.post('http://localhost:27777/json', {
