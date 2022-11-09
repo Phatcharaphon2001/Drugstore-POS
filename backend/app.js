@@ -47,7 +47,7 @@ app.get('/user/:id', function(req, res) {
     run().catch(console.dir);
 });
 
-// POST /user/update : need id, name, email, password => return the updated data -or- empty if not valid ID 
+// POST /user/update : need id, name, email, password(hashed MD5) => return the updated data -or- empty if not valid ID 
 app.post('/user/update', function(req, res) {
     console.log(`POST /user/update`);
     async function run() {
@@ -62,9 +62,10 @@ app.post('/user/update', function(req, res) {
                 }
             };
             if (req.body.password !== undefined && req.body.password != "")
-                data["$set"]["password"] = md5(req.body.password);
+                data["$set"]["password"] = req.body.password;
 
-            if (req.body.email == undefined || req.body.email == null || req.body.email == "") {
+            if (req.body.id == undefined || req.body.id == null || req.body.id == ""
+                || req.body.email == undefined || req.body.email == null || req.body.email == "") {
                 //email can't be empty
                 res.end(JSON.stringify({}, null, 4));
             } else {
@@ -84,7 +85,7 @@ app.post('/user/update', function(req, res) {
     run().catch(console.dir);
 });
 
-// POST /user/add : need name, email, password => return the user data
+// POST /user/add : need name, email, password(hash MD5) => return the user data
 app.post('/user/add', function(req, res) {
     console.log(`POST /user/add`);
     async function run() {
@@ -95,7 +96,7 @@ app.post('/user/add', function(req, res) {
             let data = {
                 name: req.body.name,
                 email: req.body.email,
-                password: md5(req.body.password)
+                password: req.body.password
             };
             
             if (req.body.email == undefined || req.body.email == null || req.body.email == ""
@@ -120,18 +121,15 @@ app.post('/user/add', function(req, res) {
     run().catch(console.dir);
 });
 
-// POST /auth/login : need email, password => return a user without password
+// POST /auth/login : need email, password(hashed with MD5) => return a user without password
 app.post('/auth/login', function(req, res) {
     console.log(`POST /auth/login`);
-    console.log(req.body);
     async function run() {
         const client = new mongodb.MongoClient(mongoServerURI);
         try {
             const database = client.db('WAD');
             const users = database.collection('users');
-            const result = await users.findOne({email: "p0ndja@gmail.com", password: "5b4a4067e9429bfc38364f9c761eb74a"}, {projection:{password: 0}});
-            console.log(md5(req.body.password));
-            console.log(result)
+            const result = await users.findOne({email: req.body.email, password: req.body.password}, {projection:{password: 0}});
             res.end(JSON.stringify(result, null, 4));
         } catch (e) {
             res.end(JSON.stringify({}, null, 4));
@@ -167,7 +165,7 @@ app.get('/inventory/id/:id', function(req, res) {
         try {
             const database = client.db('WAD');
             const inventory = database.collection('inventory');
-            const result = await inventory.find({_id: mongodb.ObjectId(req.params.id)}).toArray();
+            const result = await inventory.find({_id: req.params.id}).toArray();
             res.end(JSON.stringify(result, null, 4));
         } finally {
             await client.close();
@@ -210,11 +208,11 @@ app.post('/inventory/update', function(req, res) {
                     lot: req.body.lot
                 }
             };
-            if (req.body["_id"] == undefined || req.body["_id"] == null || req.body["_id"] == "") {
+            if (req.body._id == undefined || req.body._id == null || req.body._id == "") {
                 //ID can't be empty
                 res.end(JSON.stringify({}, null, 4));
             } else {
-                const result = await inventory.updateOne({_id: mongodb.ObjectId(req.body.id)}, data,{upsert: 0});
+                const result = await inventory.updateOne({_id: req.body.id}, data,{upsert: 0});
                 if (result.modifiedCount > 0) {
                     res.end(JSON.stringify({id: req.body.id, name: req.body.name, type: req.body.type, unit: req.body.unit, lot: req.body.lot}, null, 4));
                 } else {
@@ -239,16 +237,22 @@ app.post('/inventory/add', function(req, res) {
             const database = client.db('WAD');
             const inventory = database.collection('inventory');
             let data = {
+                _id: req.body.id,
                 name: req.body.name,
                 type: req.body.type,
                 unit: req.body.unit,
                 lot: req.body.lot
             };
-            const result = await inventory.insertOne(data);
-            if (result.acknowledged) {
-                res.end(JSON.stringify({id: result.insertedId, name: req.body.name, type: req.body.type, unit: req.body.unit, lot: req.body.lot}, null, 4));
-            } else {
+            if (req.body.id == undefined || req.body.id == null || req.body.id == "") {
+                //email can't be empty
                 res.end(JSON.stringify({}, null, 4));
+            } else {
+                const result = await inventory.insertOne(data);
+                if (result.acknowledged) {
+                    res.end(JSON.stringify({id: req.body.id, name: req.body.name, type: req.body.type, unit: req.body.unit, lot: req.body.lot}, null, 4));
+                } else {
+                    res.end(JSON.stringify({}, null, 4));
+                }
             }
         } catch (e) {
             res.end(JSON.stringify({}, null, 4));
@@ -268,3 +272,18 @@ app.post('/json', function(req, res) {
 let server = app.listen(27777, function() {
     console.log(`listening on 0.0.0.0:${server.address().port}`);
 });
+
+const compareDate = (object1, object2, key) => {
+    const obj1 = new Date(object1[key]);
+    const obj2 = new Date(object2[key]);
+    if (obj1 < obj2) {
+        return -1;
+    }
+    if (obj1 > obj2) {
+        return 1;
+    }
+    return 0;
+}
+
+// let lotExp = [{"exp": "2020-10-11", "amount": 9}, {"exp": "2020-12-11", "amount": 99}, {"exp": "2020-09-30", "amount": 9}];
+// lotExp.sort((i,j)=>{return compareDate(i,j, "exp")});
