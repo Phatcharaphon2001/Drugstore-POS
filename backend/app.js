@@ -269,16 +269,19 @@ app.post('/inventory/update', function(req, res) {
                     name: req.body.name,
                     type: req.body.type,
                     unit: req.body.unit,
-                    lot: req.body.lot
+                    exp: req.body.exp,
+                    amount: req.body.amount,
+                    price_origin: req.body.price_origin,
+                    price_sell: req.body.price_sell
                 }
             };
             if (req.body._id == undefined || req.body._id == null || req.body._id == "") {
                 //ID can't be empty
                 res.end(JSON.stringify({}, null, 4));
             } else {
-                const result = await inventory.updateOne({_id: req.body._id}, data,{upsert: 0});
+                const result = await inventory.updateOne({_id: req.body._id}, data, {upsert: 0});
                 if (result.modifiedCount > 0) {
-                    res.end(JSON.stringify({_id: req.body._id, name: req.body.name, type: req.body.type, unit: req.body.unit, lot: req.body.lot}, null, 4));
+                    res.end(JSON.stringify(data.$set, null, 4));
                 } else {
                     res.end(JSON.stringify({}, null, 4));
                 }
@@ -305,7 +308,10 @@ app.post('/inventory/add', function(req, res) {
                 name: req.body.name,
                 type: req.body.type,
                 unit: req.body.unit,
-                lot: req.body.lot
+                exp: req.body.exp,
+                amount: req.body.amount,
+                price_origin: req.body.price_origin,
+                price_sell: req.body.price_sell
             };
             if (req.body._id == undefined || req.body._id == null || req.body._id == "") {
                 //email can't be empty
@@ -313,7 +319,7 @@ app.post('/inventory/add', function(req, res) {
             } else {
                 const result = await inventory.insertOne(data);
                 if (result.acknowledged) {
-                    res.end(JSON.stringify({_id: req.body._id, name: req.body.name, type: req.body.type, unit: req.body.unit, lot: req.body.lot}, null, 4));
+                    res.end(JSON.stringify(data.$set, null, 4));
                 } else {
                     res.end(JSON.stringify({}, null, 4));
                 }
@@ -365,6 +371,7 @@ let server = app.listen(27777, function() {
     console.log(`listening on 0.0.0.0:${server.address().port}`);
 });
 
+/*
 const compareDate = (object1, object2, key) => {
     const obj1 = new Date(object1[key]);
     const obj2 = new Date(object2[key]);
@@ -376,7 +383,7 @@ const compareDate = (object1, object2, key) => {
     }
     return 0;
 }
-
+*/
 // let lotExp = [{"exp": "2020-10-11", "amount": 9}, {"exp": "2020-12-11", "amount": 99}, {"exp": "2020-09-30", "amount": 9}];
 // lotExp.sort((i,j)=>{return compareDate(i,j, "exp")});
 
