@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/esm/Button";
@@ -33,9 +33,14 @@ const Inventory = () => {
     const formIndex = products.findIndex((product) => product.id === editId);
     newProducts.splice(formIndex, 1);
     setProducts(newProducts);
+    deleteProduct(products._id);
     handleCloseEdit();
   
   };
+
+  const deleteProduct = (id) => {
+    axios.delete(`http://localhost:27777/inventory/delete`, {_id: id})
+  }
 
   const [addProduct, setAddProduct] = useState({
     _id: "22",
@@ -48,7 +53,6 @@ const Inventory = () => {
     price_sell: 0,
   });
   const navigate = useNavigate();
-  const params = useParams();
 
   //get data from backend
   async function onSubmit(e) {
@@ -67,7 +71,7 @@ const Inventory = () => {
     }
   }
 
-  
+ 
 
   //update form
   function updateProducts(value) {
@@ -75,9 +79,6 @@ const Inventory = () => {
       return {...prev, ...value};
     });
 }
-
-
-
 
   const [showADD, setShowADD] = useState(false);
   const handleCloseADD = () => setShowADD(false);
@@ -88,9 +89,65 @@ const Inventory = () => {
   const handleShowEdit = () => setShowEdit(true);
 
 
- 
+  //get ID
+  const [editId, setEditId] = useState(null);
+  const [editFormData, setEditFormData] = useState({
+    _id: "",
+    name: "",
+    type: "",
+    unit: "",
+    exp: "",
+    amount: 0,
+    price_origin: 0,
+    price_sell: 0,
+  });
 
 
+
+
+  //Edit Data values
+  const handleEditProduct = (input) => (e) => {
+    e.preventDefault();
+    console.log(editFormData);
+    setEditFormData({ ...editFormData, [input]: e.target.value });
+  };
+
+  //edit modal data
+  const handleEditProductForm = (e, product) => {
+    e.preventDefault();
+    setEditId(product.id);
+    const  formVlues = {
+      _id: product.id,
+      name: product.name,
+      type: product.type,
+      unit: product.unit,
+      exp: product.exp,
+      amount: product.amount,
+      price_origin: product.price_origin,
+      price_sell: product.price_sell,
+    }
+    setEditFormData(formVlues);
+    handleShowEdit();
+  };
+
+  //save form data
+  const handleFormSave = (e) => {
+    e.preventDefault();
+    const saveProduct = {
+      _id: editId,
+      name: editFormData.name,
+      type: editFormData.type,
+      unit: editFormData.unit,
+      exp: editFormData.exp,
+      amount: editFormData.amount,
+      price_origin: editFormData.price_origin,
+      price_sell: editFormData.price_sell,
+    }
+    const newProducts = [...products];
+    const formIndex = products.findIndex((product) => product.id === editId);
+    newProducts[formIndex] = saveProduct;
+    setProducts(newProducts);
+  };
 
   //Search Filter Data
   const [searchQuery, setSearchQuery] = useState("");
@@ -313,7 +370,7 @@ const Inventory = () => {
                 name="unit"
                 value={editFormData.unit}
                 
-                onChange={(e)=> updateProducts({unit: e.target.value})}
+                onChange={(handleEditProduct("unit"))}
               />
             </Form.Group>
             <Form.Group className="mb-3">
@@ -324,7 +381,7 @@ const Inventory = () => {
                 name="exp"
                 value={editFormData.exp}
                 
-                onChange={(e)=> updateProducts({exp: e.target.value})}
+                onChange={(handleEditProduct("exp"))}
               />
             </Form.Group>
             <Form.Group className="mb-3">
@@ -335,7 +392,7 @@ const Inventory = () => {
                 name="amount"
                 value={editFormData.amount}
                 
-                onChange={(e)=> updateProducts({amount: e.target.value})}
+                onChange={(handleEditProduct("number"))}
               />
             </Form.Group>
             <Form.Group className="mb-3">
@@ -346,7 +403,7 @@ const Inventory = () => {
                 name="price_origin"
                 value={editFormData.price_origin}
                 
-                onChange={(e)=> updateProducts({price_origin: e.target.value})}
+                onChange={(handleEditProduct("price_origin"))}
               />
             </Form.Group>
             <Form.Group className="mb-3">
@@ -357,7 +414,7 @@ const Inventory = () => {
                 name="price_sell"
                 value={editFormData.price_sell}
                 
-                onChange={(e)=> updateProducts({price_sell: e.target.value})}
+                onChange={(handleEditProduct("price_sell"))}
               />
             </Form.Group>
             <Modal.Footer>
