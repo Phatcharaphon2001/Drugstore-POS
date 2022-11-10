@@ -319,7 +319,7 @@ app.post('/inventory/add', function(req, res) {
             } else {
                 const result = await inventory.insertOne(data);
                 if (result.acknowledged) {
-                    res.end(JSON.stringify(data.$set, null, 4));
+                    res.end(JSON.stringify(data, null, 4));
                 } else {
                     res.end(JSON.stringify({}, null, 4));
                 }
@@ -352,6 +352,103 @@ app.delete('/inventory/delete', function(req, res) {
                     res.end(JSON.stringify({}, null, 4));
                 }
             }
+        } catch (e) {
+            res.end(JSON.stringify({}, null, 4));
+        } finally {
+            await client.close();
+        }
+    }
+    run().catch(console.dir);
+});
+
+// POST /sale/submit : need time(UNIX), item(List -- JSON)
+app.post('/sale/submit', function(req, res) {
+    console.log(`POST /sale/submit`);
+    async function run() {
+        const client = new mongodb.MongoClient(mongoServerURI);
+        try {
+            const database = client.db('WAD');
+            const sales = database.collection('sales');
+            const inventory = database.collection('inventory');
+            let price = 0;
+            let data = {
+                time: Date.now(),
+                item: {"8850999321004": 10}
+            };
+            //ITEM SHOULD BE IN LIST WITH ITEM_ID AS KEY AND AMOUNT AS VALUE
+            //item: {"2913012930": 999, "2090123530": 111}
+            if (req.body.item.length == 0) {
+                //email can't be empty
+                res.end(JSON.stringify({}, null, 4));
+            } else {
+                let inv = await inventory.find({_id: {$in: Object.keys(data.item)}}).toArray();
+                let invalid = [];
+                let price = 0;
+                //inv.sort((i,j)=>{return i._id - j._id;});
+                for (let i = 0; i < inv.length; i++) {
+                    let curID = inv[i]._id;
+                    if (inv[i].amount >= data.item[curID]) {
+                        inv[i].amount -= data.item[curID];
+                        price += inv[i].price_sell;
+                    } else {
+                        invalid.push(curID);
+                    }
+                }
+                if (invalid.length == 0) {
+                    for (let i = 0; i < inv.length; i++) {
+                        let e = inv[i];
+                        const updateInv = await inventory.updateOne({_id: e._id}, {$set: {amount: e.amount}});
+                        if (!updateInv.acknowledged) {
+                            invalid.push(e);
+                            break;
+                        }
+                    }
+                    const result = await sales.insertOne(data);
+                    if (result.acknowledged && result.insertedId) {
+                        res.end(JSON.stringify({_id: result.insertedId, qr: `https://promptpay.io/0908508007/${price}`, invalid: invalid}, null, 4));
+                    } else {
+                        res.end(JSON.stringify({}, null, 4));
+                    }
+                } else {
+                    res.end(JSON.stringify({}, null, 4));
+                }
+            }
+        } catch (e) {
+            res.end(JSON.stringify({}, null, 4));
+        } finally {
+            await client.close();
+        }
+    }
+    run().catch(console.dir);
+});
+
+// GET / : return all users without password
+app.get('/user', function(req, res) {
+    console.log(`GET /user`);
+    async function run() {
+        const client = new mongodb.MongoClient(mongoServerURI);
+        try {
+            const database = client.db('WAD');
+            const users = database.collection('users');
+            const result = await users.find({}, {projection:{password: 0}}).toArray();
+            res.end(JSON.stringify(result, null, 4));
+        } finally {
+            await client.close();
+        }
+    }
+    run().catch(console.dir);
+});
+
+// GET /user/<id> : return a user without password
+app.get('/user/:id', function(req, res) {
+    console.log(`GET /user/${req.params.id}`);
+    async function run() {
+        const client = new mongodb.MongoClient(mongoServerURI);
+        try {
+            const database = client.db('WAD');
+            const users = database.collection('users');
+            const result = await users.findOne({_id: mongodb.ObjectId(req.params.id)}, {projection:{password: 0}});
+            res.end(JSON.stringify(result, null, 4));
         } catch (e) {
             res.end(JSON.stringify({}, null, 4));
         } finally {
