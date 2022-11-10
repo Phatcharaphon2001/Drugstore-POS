@@ -20,6 +20,7 @@ import CRUDTable,
 
 export default class Sales extends Component {
   render() {
+    
 
     const columns = [
       { field: 'id', headerName: 'Item ID',type: 'number', width: 70 },
