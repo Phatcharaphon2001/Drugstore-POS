@@ -1,45 +1,66 @@
-import { Container, textAlign } from '@mui/system';
+import axios from "axios";
 import React, { Component } from 'react';
+import {useNavigate} from "react-router-dom";
+import Swal from "sweetalert2";
 
-export default class Login extends Component {
-  render() {
+export default function Login()  {
+    async function handleSubmit(e) {
+        e.preventDefault();
+        await axios.post("http://p0nd.ga:27777/auth/login", {
+            email: e.target[0].value,
+            password: e.target[1].value
+        }).then((response)=>{
+            if (response.data !== null) { navigate("/");}
+            else {Swal.fire({
+                title: 'Error!',
+                text: 'Wrong Email or Password',
+                icon: 'error',
+                confirmButtonText: 'Ok'
+              })}
+        });
+    };
+    const navigate = useNavigate();
+
     return (
-        <form>
+        
+        <section>
             <div className="container-login" >
 
-                <img src="https://img.graphicsurf.com/2020/09/people-in-pharmacy-vector-illustration.jpg" width={350}>
+                <img src="https://img.graphicsurf.com/2020/09/people-in-pharmacy-vector-illustration.jpg" width={380}>
                 </img>
                 <h3>Drugstore POS</h3>
                 
-                <div className="input-name">
+            <form onSubmit={handleSubmit}>
+                <label htmlFor="email"></label>
                     <input 
                         type="text"
+                        id="email"
                         className="form-control"
-                        placeholder="Username"
+                        placeholder="email"
                         style={{
                             width: "250px",
                             height: "40px",
                         }}
                     />
-                </div>
-                
-                <div className="input-password">
+
+                <label htmlFor="password"></label>
                     <input
                         type="password"
+                        id="password"
                         className="form-control"
                         placeholder="Password"
                         style={{width: "250px"}}
                     />
-                </div>
-
+                <label htmlFor="submit"></label>
                 <div className="Login-button">
                     <button type="submit" className="btn btn-primary" style={{width: "250px", }}>
                     Login
                     </button>
                 </div>
+            </form>
+                
             </div>
-          
-        </form>
+        
+        </section>
       )
     }
-}

@@ -26,12 +26,12 @@ function App() {
         <Sidebar />
         <div style={{height: '100vh', overflow: 'scroll', width: '100%'}}>
           <Routes>
+            <Route path='/login' element={<Login/>}/>
             <Route exact path='/' element={<Home/>} />
             <Route path='/inventory' element={<Inventory/>}/>
             <Route path='/report' element={<Report/>}/>
             <Route path='/sales' element={<Sales/>}/>
             <Route path='/users' element={<Users/>}/>
-            <Route path='/login' element={<Login/>}/>
           </Routes>
         </div>
       </Stack>
