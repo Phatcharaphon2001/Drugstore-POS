@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/esm/Button";
@@ -10,14 +11,25 @@ import Col from 'react-bootstrap/Col';
 import Table from 'react-bootstrap/Table';
 
 
+
 const Inventory = () => {
+
   const [products, setProducts] = useState([]);
 
+
+  useEffect(() => {
+    async function getProducts() {
+      let data = await axios.get("http://localhost:27777/inventory/")
+      .then((e)=>{return e.data})
+      setProducts(data);
+    }
+    getProducts();
+  }, []);
 
   //Delete Product
   const handleDelete = (e) => {
     e.preventDefault();
-    const newProducts = [...products];
+    const newProducts = [...addProduct];
     const formIndex = products.findIndex((product) => product.id === editId);
     newProducts.splice(formIndex, 1);
     setProducts(newProducts);
@@ -25,17 +37,47 @@ const Inventory = () => {
   
   };
 
+  const [addProduct, setAddProduct] = useState({
+    _id: "22",
+    name: "",
+    type: "",
+    unit: "",
+    exp: "",
+    amount: 20,
+    price_origin: 0,
+    price_sell: 0,
+  });
+  const navigate = useNavigate();
+  const params = useParams();
+
   //get data from backend
-  const fecthUrl = "http://localhost:3000/product";
-  useEffect(() => {
-    async function fecthData() {
-      const data = await axios.get(fecthUrl);
-      setProducts(data.data);
-      //console.log(data);
+  async function onSubmit(e) {
+    e.preventDefault();
+
+    const newProducts = {...addProduct};
+    console.log(newProducts);
+    const req = await axios.post("http://p0nd.ga:27777/inventory/add", newProducts);
+    console.log(req.data);
+    if (req.data) {
+      setAddProduct ({ _id: "", name: "", type: "", unit: "", exp: "", amount: 0, price_origin: 0, price_sell: 0});
+      navigate("/inventory");
+      let data = await axios.get("http://localhost:27777/inventory/")
+      .then((e)=>{return e.data})
+      setProducts(data);
     }
-    fecthData();
-  }, []);
- 
+  }
+
+  
+
+  //update form
+  function updateProducts(value) {
+    return setAddProduct((prev) => {
+      return {...prev, ...value};
+    });
+}
+
+
+
 
   const [showADD, setShowADD] = useState(false);
   const handleCloseADD = () => setShowADD(false);
@@ -45,88 +87,10 @@ const Inventory = () => {
   const handleCloseEdit = () => setShowEdit(false);
   const handleShowEdit = () => setShowEdit(true);
 
-  const [addProduct, setAddProduct] = useState({
-    id: 11,
-    name: "",
-    expire: "",
-    cost: "",
-    sell: "",
-    total: 6,
-  });
 
-  //get ID
-  const [editId, setEditId] = useState(null);
-  const [editFormData, setEditFormData] = useState({
-    id: 12,
-    name: "",
-    expire: "",
-    cost: "",
-    sell: "",
-    total: 6,
-  });
+ 
 
-//get Form values
-  const handleAddProduct = (input) => (e) => {
-    e.preventDefault();
-    console.log(addProduct);
-    setAddProduct({ ...addProduct, [input]: e.target.value });
-  };
 
-//add product to table
-const handleToTable = (e) => {
-  e.preventDefault();
-  const newProduct = {
-    id: addProduct.id,
-    name: addProduct.name,
-    expire: addProduct.expire,
-    cost: addProduct.cost,
-    sell: addProduct.sell,
-    total: addProduct.total,
-  };
-  const newProducts = [...products, newProduct];
-  setProducts(newProducts);
-}
-
-  //Edit Data values
-  const handleEditProduct = (input) => (e) => {
-    e.preventDefault();
-    console.log(editFormData);
-    setEditFormData({ ...editFormData, [input]: e.target.value });
-  };
-
-  //edit modal data
-  const handleEditProductForm = (e, product) => {
-    e.preventDefault();
-    setEditId(product.id);
-    const  formVlues = {
-      id: product.id,
-      name: product.name,
-      expire: product.expire,
-      cost: product.cost,
-      sell: product.sell,
-      total: product.total,
-    }
-    setEditFormData(formVlues);
-    handleShowEdit();
-  };
-
-  //save form data
-  const handleFormSave = (e) => {
-    e.preventDefault();
-    const saveProduct = {
-      id: editId,
-      name: editFormData.name,
-      expire: editFormData.expire,
-      cost: editFormData.cost,
-      sell: editFormData.sell,
-      total: editFormData.total,
-    }
-    const newProducts = [...products];
-    const formIndex = products.findIndex((product) => product.id === editId);
-    newProducts[formIndex] = saveProduct;
-    setProducts(newProducts);
-    setEditId(null);
-  };
 
   //Search Filter Data
   const [searchQuery, setSearchQuery] = useState("");
@@ -164,10 +128,12 @@ const handleToTable = (e) => {
           <tr>
             <th scope="col">Product ID</th>
             <th scope="col">Product Name</th>
-            <th scope="col">Expire</th>
-            <th scope="col">Cost Price</th>
-            <th scope="col">Sell Price</th>
-            <th scope="col">Total</th>
+            <th scope="col">type</th>
+            <th scope="col">Unit</th>
+            <th scope="col">exp</th>
+            <th scope="col">amount</th>
+            <th scope="col">Cost Price</th> 
+            <th scope="col">Sell Price</th> 
             <th scope="col">Action</th>
           </tr>
         </thead>
@@ -190,15 +156,16 @@ const handleToTable = (e) => {
         ></Button>
         </Modal.Header>
         <div className="modal-body">
-          <Form onSubmit={handleToTable}>
+
+          <Form onSubmit={onSubmit}>
             <Form.Group className="mb-3">
               <Form.Label className="form-label">Product ID</Form.Label>
               <input
                 type="text"
                 className="form-control"
-                name="id"
-                required
-                onChange={handleAddProduct("id")}
+                id="_id"
+                value={addProduct._id}
+                onChange={(e)=> updateProducts({_id: e.target.value})}
               />
             </Form.Group>
             <Form.Group className="mb-3">
@@ -206,57 +173,84 @@ const handleToTable = (e) => {
               <Form.Control
                 type="text"
                 className="form-control"
-                name="name"
-                placeholder="title"
-                required
-                onChange={handleAddProduct("name")}
+                id="name"
+                placeholder="Enter Product Name"
+                value={addProduct.name}
+                
+                onChange={(e)=> updateProducts({name: e.target.value})}
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label className="form-label">Expire</Form.Label>
+              <Form.Label className="form-label">type</Form.Label>
+              <Form.Control
+                type="text"
+                className="form-control"
+                name="type"
+                value={addProduct.type}
+                
+                onChange={(e)=> updateProducts({type: e.target.value})}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label className="form-label">unit</Form.Label>
+              <Form.Control
+                type="text"
+                className="form-control"
+                name="unit"
+                value={addProduct.unit}
+                
+                onChange={(e)=> updateProducts({unit: e.target.value})}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label className="form-label">exp</Form.Label>
               <Form.Control
                 type="date"
                 className="form-control"
-                name="expire"
-                required
-                onChange={handleAddProduct("expire")}
+                name="exp"
+                value={addProduct.exp}
+                
+                onChange={(e)=> updateProducts({exp: e.target.value})}
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label className="form-label">Cost Price</Form.Label>
+              <Form.Label className="form-label">amount</Form.Label>
               <Form.Control
                 type="number"
                 className="form-control"
-                name="cost"
-                required
-                onChange={handleAddProduct("cost")}
+                name="amount"
+                value={addProduct.amount}
+                
+                onChange={(e)=> updateProducts({amount: e.target.value})}
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label className="form-label">Sell Price</Form.Label>
+              <Form.Label className="form-label">price_origin</Form.Label>
               <Form.Control
                 type="number"
                 className="form-control"
-                name="sell"
-                required
-                onChange={handleAddProduct("sell")}
+                name="price_origin"
+                value={addProduct.price_origin}
+                
+                onChange={(e)=> updateProducts({price_origin: e.target.value})}
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label className="form-label">Total</Form.Label>
+              <Form.Label className="form-label">price_sell</Form.Label>
               <Form.Control
                 type="number"
                 className="form-control"
-                name="total"
-                required
-                onChange={handleAddProduct("total")}
+                name="price_sell"
+                value={addProduct.price_sell}
+                
+                onChange={(e)=> updateProducts({price_sell: e.target.value})}
               />
             </Form.Group>
             <Modal.Footer> 
               <Button variant="secondary" onClick={handleCloseADD}>
                 Close
               </Button>
-              <Button variant="success" type="submit">
+              <Button variant="success" type="submit" onClick={handleCloseADD} >
                 ADD
               </Button>
             </Modal.Footer>
@@ -267,7 +261,7 @@ const handleToTable = (e) => {
       {/*Edit Modal */}
       <Modal className="modal-add" show={showEdit} onHide={handleCloseEdit}>
         <Modal.Header>
-          <Modal.Title>Edit Product</Modal.Title>
+          <Modal.Title >Edit Product </Modal.Title>
         <Button
           type="button"
           className="btn-close"
@@ -283,9 +277,9 @@ const handleToTable = (e) => {
                 className="form-control"
                 name="id"
                 required
-                value={editFormData.id}
+                value={editFormData._id}
                 disabled
-                onChange={handleEditProduct("id")}
+                onChange={handleEditProduct("_id")}
               />
             </Form.Group>
             <Form.Group className="mb-3">
@@ -301,47 +295,69 @@ const handleToTable = (e) => {
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label className="form-label">Expire</Form.Label>
+              <Form.Label className="form-label">type</Form.Label>
+              <Form.Control
+                type="text"
+                className="form-control"
+                name="type"
+                required
+                value={editFormData.type}
+                onChange={handleEditProduct("type")}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label className="form-label">unit</Form.Label>
+              <Form.Control
+                type="text"
+                className="form-control"
+                name="unit"
+                value={editFormData.unit}
+                
+                onChange={(e)=> updateProducts({unit: e.target.value})}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label className="form-label">exp</Form.Label>
               <Form.Control
                 type="date"
                 className="form-control"
-                name="expire"
-                required
-                value={editFormData.expire}
-                onChange={handleEditProduct("expire")}
+                name="exp"
+                value={editFormData.exp}
+                
+                onChange={(e)=> updateProducts({exp: e.target.value})}
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label className="form-label">Cost Price</Form.Label>
+              <Form.Label className="form-label">amount</Form.Label>
               <Form.Control
                 type="number"
                 className="form-control"
-                name="cost"
-                required
-                value={editFormData.cost}
-                onChange={handleEditProduct("cost")}
+                name="amount"
+                value={editFormData.amount}
+                
+                onChange={(e)=> updateProducts({amount: e.target.value})}
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label className="form-label">Sell Price</Form.Label>
+              <Form.Label className="form-label">price_origin</Form.Label>
               <Form.Control
                 type="number"
                 className="form-control"
-                name="sell"
-                required
-                value={editFormData.sell}
-                onChange={handleEditProduct("sell")}
+                name="price_origin"
+                value={editFormData.price_origin}
+                
+                onChange={(e)=> updateProducts({price_origin: e.target.value})}
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label className="form-label">Total</Form.Label>
+              <Form.Label className="form-label">price_sell</Form.Label>
               <Form.Control
                 type="number"
                 className="form-control"
-                name="total"
-                required
-                value={editFormData.total}
-                onChange={handleEditProduct("total")}
+                name="price_sell"
+                value={editFormData.price_sell}
+                
+                onChange={(e)=> updateProducts({price_sell: e.target.value})}
               />
             </Form.Group>
             <Modal.Footer>

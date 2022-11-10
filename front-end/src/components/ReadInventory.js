@@ -5,13 +5,15 @@ const ReadInventory = ({handleEditProductForm,products, }) => {
     return (
         <>
         {products.map((product) => (
-            <tr key={product.id}>
-              <td>{product.id}</td>
+            <tr key={product._id}>
+              <td>{product._id}</td>
               <td>{product.name}</td>
-              <td>{product.expire}</td>
-              <td>{product.cost}</td>
-              <td>{product.sell}</td>
-              <td>{product.total}</td>
+              <td>{product.type}</td>
+              <td>{product.unit}</td>
+              <td>{product.exp}</td>
+              <td>{product.amount}</td>
+              <td>{product.price_origin}</td>
+              <td>{product.price_sell}</td>
               <td>
                 <Button variant="warning" onClick={(e) => handleEditProductForm(e, product)} >
                   Edit
