@@ -13,6 +13,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x
 // GET /user : return all users without password
 app.get('/user', function(req, res) {
     console.log(`GET /user`);
+    res.setHeader('Access-Control-Allow-Origin', '*');
     async function run() {
         const client = new mongodb.MongoClient(mongoServerURI);
         try {
@@ -30,6 +31,7 @@ app.get('/user', function(req, res) {
 // GET /user/<id> : return a user without password
 app.get('/user/:id', function(req, res) {
     console.log(`GET /user/${req.params.id}`);
+    res.setHeader('Access-Control-Allow-Origin', '*');
     async function run() {
         const client = new mongodb.MongoClient(mongoServerURI);
         try {
@@ -49,6 +51,7 @@ app.get('/user/:id', function(req, res) {
 // GET /user/search/<keyword> : return all users with <keyword> in name
 app.get('/user/search/:keyword', function(req, res) {
     console.log(`GET /user/search/${req.params.keyword}`);
+    res.setHeader('Access-Control-Allow-Origin', '*');
     async function run() {
         const client = new mongodb.MongoClient(mongoServerURI);
         try {
@@ -67,6 +70,7 @@ app.get('/user/search/:keyword', function(req, res) {
 // POST /user/update : need id, name, email, password(hashed MD5) => return the updated data -or- empty if not valid ID 
 app.post('/user/update', function(req, res) {
     console.log(`POST /user/update`);
+    res.setHeader('Access-Control-Allow-Origin', '*');
     async function run() {
         const client = new mongodb.MongoClient(mongoServerURI);
         try {
@@ -105,6 +109,7 @@ app.post('/user/update', function(req, res) {
 // POST /user/add : need name, email, password(hash MD5) => return the user data
 app.post('/user/add', function(req, res) {
     console.log(`POST /user/add`);
+    res.setHeader('Access-Control-Allow-Origin', '*');
     async function run() {
         const client = new mongodb.MongoClient(mongoServerURI);
         try {
@@ -141,6 +146,7 @@ app.post('/user/add', function(req, res) {
 // DELETE /user/delete/ : need ID
 app.delete('/user/delete', function(req, res) {
     console.log(`DELETE /user/${req.body._id}`);
+    res.setHeader('Access-Control-Allow-Origin', '*');
     async function run() {
         const client = new mongodb.MongoClient(mongoServerURI);
         try {
@@ -169,6 +175,7 @@ app.delete('/user/delete', function(req, res) {
 // POST /auth/login : need email, password(hashed with MD5) => return a user without password
 app.post('/auth/login', function(req, res) {
     console.log(`POST /auth/login`);
+    res.setHeader('Access-Control-Allow-Origin', '*');
     async function run() {
         const client = new mongodb.MongoClient(mongoServerURI);
         try {
@@ -188,6 +195,7 @@ app.post('/auth/login', function(req, res) {
 // GET /inventory : return all inventory items
 app.get('/inventory', function(req, res) {
     console.log(`GET /inventory`);
+    res.setHeader('Access-Control-Allow-Origin', '*');
     async function run() {
         const client = new mongodb.MongoClient(mongoServerURI);
         try {
@@ -205,6 +213,7 @@ app.get('/inventory', function(req, res) {
 // GET /inventory/id/<id> : return a inventory item
 app.get('/inventory/id/:id', function(req, res) {
     console.log(`GET /inventory/${req.params.id}`);
+    res.setHeader('Access-Control-Allow-Origin', '*');
     async function run() {
         const client = new mongodb.MongoClient(mongoServerURI);
         try {
@@ -222,6 +231,7 @@ app.get('/inventory/id/:id', function(req, res) {
 // GET /inventory/search/<keyword> : return all inventory with <keyword> in name
 app.get('/inventory/search/:keyword', function(req, res) {
     console.log(`GET /inventory/search/${req.params.keyword}`);
+    res.setHeader('Access-Control-Allow-Origin', '*');
     async function run() {
         const client = new mongodb.MongoClient(mongoServerURI);
         try {
@@ -241,6 +251,7 @@ app.get('/inventory/search/:keyword', function(req, res) {
 // GET /inventory/type/<type> : return all items in specified inventory type
 app.get('/inventory/type/:type', function(req, res) {
     console.log(`GET /inventory/${req.params.type}`);
+    res.setHeader('Access-Control-Allow-Origin', '*');
     async function run() {
         const client = new mongodb.MongoClient(mongoServerURI);
         try {
@@ -258,6 +269,7 @@ app.get('/inventory/type/:type', function(req, res) {
 // POST /inventory/update : need id, name, email, password => return the updated data -or- empty if not valid ID 
 app.post('/inventory/update', function(req, res) {
     console.log(`POST /inventory/update`);
+    res.setHeader('Access-Control-Allow-Origin', '*');
     async function run() {
         const client = new mongodb.MongoClient(mongoServerURI);
         try {
@@ -298,6 +310,7 @@ app.post('/inventory/update', function(req, res) {
 // POST /inventory/add : need name, email, password => return the inventory data
 app.post('/inventory/add', function(req, res) {
     console.log(`POST /inventory/add`);
+    res.setHeader('Access-Control-Allow-Origin', '*');
     async function run() {
         const client = new mongodb.MongoClient(mongoServerURI);
         try {
@@ -336,6 +349,7 @@ app.post('/inventory/add', function(req, res) {
 // DELETE /inventory/delete/ : need ID
 app.delete('/inventory/delete', function(req, res) {
     console.log(`DELETE /inventory/${req.body._id}`);
+    res.setHeader('Access-Control-Allow-Origin', '*');
     async function run() {
         const client = new mongodb.MongoClient(mongoServerURI);
         try {
@@ -364,6 +378,7 @@ app.delete('/inventory/delete', function(req, res) {
 // POST /sale/submit : need time(UNIX), item(List -- JSON)
 app.post('/sale/submit', function(req, res) {
     console.log(`POST /sale/submit`);
+    res.setHeader('Access-Control-Allow-Origin', '*');
     async function run() {
         const client = new mongodb.MongoClient(mongoServerURI);
         try {
@@ -425,6 +440,7 @@ app.post('/sale/submit', function(req, res) {
 // GET / : return all users without password
 app.get('/user', function(req, res) {
     console.log(`GET /user`);
+    res.setHeader('Access-Control-Allow-Origin', '*');
     async function run() {
         const client = new mongodb.MongoClient(mongoServerURI);
         try {
@@ -442,6 +458,7 @@ app.get('/user', function(req, res) {
 // GET /user/<id> : return a user without password
 app.get('/user/:id', function(req, res) {
     console.log(`GET /user/${req.params.id}`);
+    res.setHeader('Access-Control-Allow-Origin', '*');
     async function run() {
         const client = new mongodb.MongoClient(mongoServerURI);
         try {
@@ -460,6 +477,7 @@ app.get('/user/:id', function(req, res) {
 
 app.post('/json', function(req, res) {
     console.log(`POST /json`);
+    res.setHeader('Access-Control-Allow-Origin', '*');
     req.body.list.forEach((e) => console.log(e));
     res.end(JSON.stringify({}));
 });
