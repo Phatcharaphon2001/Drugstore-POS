@@ -347,11 +347,11 @@ app.post('/inventory/add', function(req, res) {
                 if (result.acknowledged) {
                     res.end(JSON.stringify(data, null, 4));
                 } else {
-                    res.end(JSON.stringify({}, null, 4));
+                    res.end(JSON.stringify({"acknowledge": "False"}, null, 4));
                 }
             }
         } catch (e) {
-            res.end(JSON.stringify({}, null, 4));
+            res.end(JSON.stringify({"error": "true"}, null, 4));
         } finally {
             await client.close();
         }
