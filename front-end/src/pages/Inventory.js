@@ -9,6 +9,8 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Table from 'react-bootstrap/Table';
+import Swal from "sweetalert2";
+import { async } from "@firebase/util";
 
 
 
@@ -19,28 +21,14 @@ const Inventory = () => {
 
   useEffect(() => {
     async function getProducts() {
-      let data = await axios.get("http://p0nd.ga:27777/inventory/")
+      let data = await axios.get("http://localhost:27777/inventory/")
       .then((e)=>{return e.data})
       setProducts(data);
     }
     getProducts();
   }, []);
 
-  //Delete Product
-  const handleDelete = (e) => {
-    e.preventDefault();
-    const newProducts = [...addProduct];
-    const formIndex = products.findIndex((product) => product.id === editId);
-    newProducts.splice(formIndex, 1);
-    setProducts(newProducts);
-    deleteProduct(products._id);
-    handleCloseEdit();
-  
-  };
 
-  const deleteProduct = (id) => {
-    axios.delete(`http://p0nd.ga:27777/inventory/delete`, {_id: id})
-  }
 
   const [addProduct, setAddProduct] = useState({
     _id: "22",
@@ -65,13 +53,22 @@ const Inventory = () => {
     if (req.data) {
       setAddProduct ({ _id: "", name: "", type: "", unit: "", exp: "", amount: 0, price_origin: 0, price_sell: 0});
       navigate("/inventory");
-      let data = await axios.get("http://p0nd.ga:27777/inventory/")
-      .then((e)=>{return e.data})
-      setProducts(data);
+      resetProduct();
+    }else {
+      Swal.fire({
+        title: 'Error!',
+        text: 'Wrong Email or Password',
+        icon: 'error',
+        confirmButtonText: 'Ok'
+      });
     }
   }
 
- 
+ async function resetProduct() {
+  let data = await axios.get("http://localhost:27777/inventory/")
+  .then((e)=>{return e.data})
+  setProducts(data);
+ }
 
   //update form
   function updateProducts(value) {
@@ -79,6 +76,8 @@ const Inventory = () => {
       return {...prev, ...value};
     });
 }
+
+
 
   const [showADD, setShowADD] = useState(false);
   const handleCloseADD = () => setShowADD(false);
@@ -102,9 +101,6 @@ const Inventory = () => {
     price_sell: 0,
   });
 
-
-
-
   //Edit Data values
   const handleEditProduct = (input) => (e) => {
     e.preventDefault();
@@ -115,9 +111,9 @@ const Inventory = () => {
   //edit modal data
   const handleEditProductForm = (e, product) => {
     e.preventDefault();
-    setEditId(product.id);
+    setEditId(product.id)
     const  formVlues = {
-      _id: product.id,
+      _id: product._id,
       name: product.name,
       type: product.type,
       unit: product.unit,
@@ -134,7 +130,7 @@ const Inventory = () => {
   const handleFormSave = (e) => {
     e.preventDefault();
     const saveProduct = {
-      _id: editId,
+      _id: editFormData._id,
       name: editFormData.name,
       type: editFormData.type,
       unit: editFormData.unit,
@@ -144,10 +140,39 @@ const Inventory = () => {
       price_sell: editFormData.price_sell,
     }
     const newProducts = [...products];
-    const formIndex = products.findIndex((product) => product.id === editId);
+    const formIndex = products.findIndex((product) => product.id === editFormData._id);
     newProducts[formIndex] = saveProduct;
-    setProducts(newProducts);
+    
+    axios.post('http://localhost:27777/inventory/update',saveProduct)
+    .then((res)=>{
+      if (res.data !== null) {
+        //Close modal
+        handleCloseEdit();
+        resetProduct();
+      }
+    });
+
   };
+
+    //Delete Product
+    const handleDelete = (e) => {
+      e.preventDefault();
+      let targetID = editFormData._id;
+      console.log(targetID);
+      const newProducts = [...products];
+      const formIndex = products.findIndex((product) => product.id === editFormData._id);
+      axios.delete(`http://localhost:27777/inventory/delete/${editFormData._id}`, )
+      .then((res)=>{
+        if (res.data !== null) {
+          //Close modal
+          handleCloseEdit();
+          resetProduct();
+        }
+      });
+      newProducts.splice(formIndex, 1);
+      console.log(newProducts);
+    };
+  
 
   //Search Filter Data
   const [searchQuery, setSearchQuery] = useState("");
@@ -392,7 +417,7 @@ const Inventory = () => {
                 name="amount"
                 value={editFormData.amount}
                 
-                onChange={(handleEditProduct("number"))}
+                onChange={(handleEditProduct("amount"))}
               />
             </Form.Group>
             <Form.Group className="mb-3">
