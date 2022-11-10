@@ -54,6 +54,7 @@ app.get('/user/:id', function(req, res) {
             const result = await users.findOne({_id: mongodb.ObjectId(req.params.id)}, {projection:{password: 0}});
             res.end(JSON.stringify(result, null, 4));
         } catch (e) {
+            console.log(e);
             res.end(JSON.stringify({}, null, 4));
         } finally {
             await client.close();
@@ -112,6 +113,7 @@ app.post('/user/update', function(req, res) {
                 }
             }
         } catch (e) {
+            console.log(e);
             res.end(JSON.stringify({}, null, 4));
         } finally {
             await client.close();
@@ -149,6 +151,7 @@ app.post('/user/add', function(req, res) {
                 }
             }
         } catch (e) {
+            console.log(e);
             res.end(JSON.stringify({}, null, 4));
         } finally {
             await client.close();
@@ -158,26 +161,27 @@ app.post('/user/add', function(req, res) {
 });
 
 // DELETE /user/delete/ : need ID
-app.delete('/user/delete', function(req, res) {
-    console.log(`DELETE /user/${req.body._id}`);
+app.delete('/user/delete/:id', function(req, res) {
+    console.log(`DELETE /user/delete/${req.params.id}`);
     
     async function run() {
         const client = new mongodb.MongoClient(mongoServerURI);
         try {
             const database = client.db('WAD');
             const users = database.collection('users');
-            if (req.body._id == undefined || req.body._id == null || req.body._id == "") {
+            if (req.params.id == undefined || req.params.id == null || req.params.id == "") {
                 res.end(JSON.stringify({}, null, 4));
             } else {
-                const result = await users.deleteOne({_id: mongodb.ObjectId(req.body._id)});
+                const result = await users.deleteOne({_id: mongodb.ObjectId(req.params.id)});
                 console.log(result);
                 if (result.deletedCount > 0) {
-                    res.end(JSON.stringify({_id: req.body._id, delete: 1}, null, 4));
+                    res.end(JSON.stringify({_id: req.params.id, delete: 1}, null, 4));
                 } else {
                     res.end(JSON.stringify({}, null, 4));
                 }
             }
         } catch (e) {
+            console.log(e);
             res.end(JSON.stringify({}, null, 4));
         } finally {
             await client.close();
@@ -198,6 +202,7 @@ app.post('/auth/login', function(req, res) {
             const result = await users.findOne({email: req.body.email, password: req.body.password}, {projection:{password: 0}});
             res.end(JSON.stringify(result, null, 4));
         } catch (e) {
+            console.log(e);
             res.end(JSON.stringify({}, null, 4));
         } finally {
             await client.close();
@@ -313,6 +318,7 @@ app.post('/inventory/update', function(req, res) {
                 }
             }
         } catch (e) {
+            console.log(e);
             res.end(JSON.stringify({}, null, 4));
         } finally {
             await client.close();
@@ -352,6 +358,7 @@ app.post('/inventory/add', function(req, res) {
                 }
             }
         } catch (e) {
+            console.log(e);
             res.end(JSON.stringify({"error": "true"}, null, 4));
         } finally {
             await client.close();
@@ -361,27 +368,28 @@ app.post('/inventory/add', function(req, res) {
 });
 
 // DELETE /inventory/delete/ : need ID
-app.delete('/inventory/delete', function(req, res) {
-    console.log(`DELETE /inventory/${req.body._id}`);
+app.delete('/inventory/delete/:id', function(req, res) {
+    console.log(`DELETE /inventory/delete/${req.params.id}`);
     
     async function run() {
         const client = new mongodb.MongoClient(mongoServerURI);
         try {
             const database = client.db('WAD');
             const users = database.collection('inventory');
-            if (req.body._id == undefined || req.body._id == null || req.body._id == "") {
+            if (req.params.id == undefined || req.params.id == null || req.params.id == "") {
                 res.end(JSON.stringify({}, null, 4));
             } else {
-                const result = await users.deleteOne({_id: mongodb.ObjectId(req.body._id)});
+                const result = await users.deleteOne({_id: req.params.id});
                 console.log(result);
                 if (result.deletedCount > 0) {
-                    res.end(JSON.stringify({_id: req.body._id, delete: 1}, null, 4));
+                    res.end(JSON.stringify({_id: req.params.id, delete: 1}, null, 4));
                 } else {
-                    res.end(JSON.stringify({}, null, 4));
+                    res.end(JSON.stringify({"error": "no delete"}, null, 4));
                 }
             }
         } catch (e) {
-            res.end(JSON.stringify({}, null, 4));
+            console.log(e);
+            res.end(JSON.stringify({"exception": 1}, null, 4));
         } finally {
             await client.close();
         }
@@ -400,6 +408,7 @@ app.get('/sale/:id', function(req, res) {
             const result = await sales.findOne({_id: mongodb.ObjectId(req.params.id)}, {projection:{password: 0}});
             res.end(JSON.stringify(result, null, 4));
         } catch (e) {
+            console.log(e);
             res.end(JSON.stringify({}, null, 4));
         } finally {
             await client.close();
@@ -463,6 +472,7 @@ app.post('/sale/submit', function(req, res) {
                 }
             }
         } catch (e) {
+            console.log(e);
             res.end(JSON.stringify({}, null, 4));
         } finally {
             await client.close();
@@ -651,6 +661,7 @@ app.get('/user/:id', function(req, res) {
             const result = await users.findOne({_id: mongodb.ObjectId(req.params.id)}, {projection:{password: 0}});
             res.end(JSON.stringify(result, null, 4));
         } catch (e) {
+            console.log(e);
             res.end(JSON.stringify({}, null, 4));
         } finally {
             await client.close();
