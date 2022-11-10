@@ -19,7 +19,7 @@ const Inventory = () => {
 
   useEffect(() => {
     async function getProducts() {
-      let data = await axios.get("http://localhost:27777/inventory/")
+      let data = await axios.get("http://p0nd.ga:27777/inventory/")
       .then((e)=>{return e.data})
       setProducts(data);
     }
@@ -39,7 +39,7 @@ const Inventory = () => {
   };
 
   const deleteProduct = (id) => {
-    axios.delete(`http://localhost:27777/inventory/delete`, {_id: id})
+    axios.delete(`http://p0nd.ga:27777/inventory/delete`, {_id: id})
   }
 
   const [addProduct, setAddProduct] = useState({
@@ -65,7 +65,7 @@ const Inventory = () => {
     if (req.data) {
       setAddProduct ({ _id: "", name: "", type: "", unit: "", exp: "", amount: 0, price_origin: 0, price_sell: 0});
       navigate("/inventory");
-      let data = await axios.get("http://localhost:27777/inventory/")
+      let data = await axios.get("http://p0nd.ga:27777/inventory/")
       .then((e)=>{return e.data})
       setProducts(data);
     }
