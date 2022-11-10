@@ -17,6 +17,7 @@ app.all('*',function(req,res,next)
     res.set('Access-Control-Allow-Origin','*');
     res.set('Access-Control-Allow-Methods','GET,POST,DELETE');
     res.set('Access-Control-Allow-Headers','X-Requested-With,Content-Type');
+    res.set('Content-Type', 'application/json; charset=utf-8');
 
     if ('OPTIONS' == req.method) return res.send(200);
 
@@ -347,11 +348,11 @@ app.post('/inventory/add', function(req, res) {
                 if (result.acknowledged) {
                     res.end(JSON.stringify(data, null, 4));
                 } else {
-                    res.end(JSON.stringify({}, null, 4));
+                    res.end(JSON.stringify({"acknowledge": "False"}, null, 4));
                 }
             }
         } catch (e) {
-            res.end(JSON.stringify({}, null, 4));
+            res.end(JSON.stringify({"error": "true"}, null, 4));
         } finally {
             await client.close();
         }
@@ -436,7 +437,7 @@ app.post('/sale/submit', function(req, res) {
                     let curID = inv[i]._id;
                     if (inv[i].amount >= data.item[curID]) {
                         inv[i].amount -= data.item[curID];
-                        price += inv[i].price_sell;
+                        price += inv[i].price_sell*data.item[curID];
                     } else {
                         invalid.push(curID);
                     }
@@ -450,9 +451,10 @@ app.post('/sale/submit', function(req, res) {
                             break;
                         }
                     }
+                    data.price = price;
                     const result = await sales.insertOne(data);
                     if (result.acknowledged && result.insertedId) {
-                        res.end(JSON.stringify({_id: result.insertedId, qr: `https://promptpay.io/0908508007/${price}`, invalid: invalid}, null, 4));
+                        res.end(JSON.stringify({_id: result.insertedId, price: price, qr: `https://promptpay.io/0908508007/${price}`, invalid: invalid}, null, 4));
                     } else {
                         res.end(JSON.stringify({}, null, 4));
                     }
@@ -472,14 +474,21 @@ app.post('/sale/submit', function(req, res) {
 // GET /report/ : return all users without password
 app.get('/report', function(req, res) {
     console.log(`GET /report`);
-    
+
     async function run() {
         const client = new mongodb.MongoClient(mongoServerURI);
         try {
             const database = client.db('WAD');
-            const users = database.collection('sales');
-            const result = await users.find({}, {projection:{password: 0}}).toArray();
-            res.end(JSON.stringify(result, null, 4));
+            const sales = database.collection('sales');
+            const today = today_EPOCH();
+            
+            const result = await sales.find({time: {$gte: today}}).toArray();
+            console.log(result);
+            let grandTotalPrice = 0;
+            result.forEach((e) => {
+                grandTotalPrice += e.price;
+            })
+            res.end(JSON.stringify({grand_total_sell: grandTotalPrice, transaction: result}, null, 4));
         } finally {
             await client.close();
         }
@@ -487,6 +496,149 @@ app.get('/report', function(req, res) {
     run().catch(console.dir);
 });
 
+// GET /report/7day : return all users without password
+app.get('/report/7day', function(req, res) {
+    console.log(`GET /report/7day`);
+    
+    async function run() {
+        const client = new mongodb.MongoClient(mongoServerURI);
+        try {
+            const database = client.db('WAD');
+            const sales = database.collection('sales');
+            const today = sevenDayBefore_EPOCH();
+            
+            const result = await sales.find({time: {$gte: today}}).toArray();
+            console.log(result);
+            let grandTotalPrice = 0;
+            result.forEach((e) => {
+                grandTotalPrice += e.price;
+            })
+            res.end(JSON.stringify({grand_total_sell: grandTotalPrice, transaction: result}, null, 4));
+        } finally {
+            await client.close();
+        }
+    }
+    run().catch(console.dir);
+});
+
+// GET /report/ : return all users without password
+app.get('/report/date/:date', function(req, res) {
+    console.log(`GET /report/date/${req.params.date}`);
+    
+    async function run() {
+        const client = new mongodb.MongoClient(mongoServerURI);
+        try {
+            const database = client.db('WAD');
+            const sales = database.collection('sales');
+            let specificDate = new Date(req.params.date); specificDate.setHours(0,0,0,0);
+            let tomorrowSpecificDate = new Date(new Date(req.params.date).setDate(new Date(req.params.date).getDate()+1)); tomorrowSpecificDate.setHours(0,0,0,0);
+            const result = await sales.find({time: {$gte: Math.floor(specificDate.getTime()), $lt: Math.floor(tomorrowSpecificDate.getTime())}}).toArray();
+            let grandTotalPrice = 0;
+            result.forEach((e) => {
+                grandTotalPrice += e.price;
+            })
+            res.end(JSON.stringify({grand_total_sell: grandTotalPrice, transaction: result}, null, 4));
+        } finally {
+            await client.close();
+        }
+    }
+    run().catch(console.dir);
+});
+
+// GET /report/ : return all users without password
+app.get('/report/item_id/:id', function(req, res) {
+    console.log(`GET /report/item_id/${req.params.id}`);
+
+    async function run() {
+        const client = new mongodb.MongoClient(mongoServerURI);
+        try {
+            const database = client.db('WAD');
+            const sales = database.collection('sales');
+            const today = today_EPOCH();
+
+            const item_id = req.params.id;
+            let onlySpecificID = [];
+            let grandTotalAmount = 0;
+
+            const result = await sales.find({time: {$gte: today}}).toArray();
+            result.forEach((e) => {
+                if (e.item[item_id] !== undefined) {
+                    onlySpecificID.push(e);
+                    grandTotalAmount += e.item[item_id];
+                }
+            });
+            
+            res.end(JSON.stringify({grand_total_amount: grandTotalAmount, transaction: onlySpecificID}, null, 4));
+        } finally {
+            await client.close();
+        }
+    }
+    run().catch(console.dir);
+});
+
+// GET /report/ : return all users without password
+app.get('/report/item_id/:id/date/:date', function(req, res) {
+    console.log(`GET /report/item_id/${req.params.id}/date/${req.params.date}`);
+    
+    async function run() {
+        const client = new mongodb.MongoClient(mongoServerURI);
+        try {
+            const database = client.db('WAD');
+            const sales = database.collection('sales');
+            let specificDate = new Date(req.params.date); specificDate.setHours(0,0,0,0);
+            let tomorrowSpecificDate = new Date(new Date(req.params.date).setDate(new Date(req.params.date).getDate()+1)); tomorrowSpecificDate.setHours(0,0,0,0);
+            
+            const item_id = req.params.id;
+            let onlySpecificID = [];
+            let grandTotalAmount = 0;
+
+            const result = await sales.find({time: {$gte: Math.floor(specificDate.getTime()), $lt: Math.floor(tomorrowSpecificDate.getTime())}}).toArray();
+            result.forEach((e) => {
+                if (e.item[item_id] !== undefined) {
+                    onlySpecificID.push(e);
+                    grandTotalAmount += e.item[item_id];
+                }
+            });
+            
+            res.end(JSON.stringify({grand_total_amount: grandTotalAmount, transaction: onlySpecificID}, null, 4));
+        } finally {
+            await client.close();
+        }
+    }
+    run().catch(console.dir);
+});
+
+
+// GET /report/7day : return all users without password
+app.get('/report/item_id/:id/7day', function(req, res) {
+    console.log(`GET /report/item_id/${req.params.id}/7day`);
+    
+    async function run() {
+        const client = new mongodb.MongoClient(mongoServerURI);
+        try {
+            const database = client.db('WAD');
+            const sales = database.collection('sales');
+            const day = sevenDayBefore_EPOCH();
+            
+            const result = await sales.find({time: {$gte: day}}).toArray();
+            
+            const item_id = req.params.id;
+            let onlySpecificID = [];
+            let grandTotalAmount = 0;
+            result.forEach((e) => {
+                if (e.item[item_id] !== undefined) {
+                    onlySpecificID.push(e);
+                    grandTotalAmount += e.item[item_id];
+                }
+            });
+            res.end(JSON.stringify({grand_total_amount: grandTotalAmount, transaction: onlySpecificID}, null, 4));
+        } finally {
+            await client.close();
+        }
+    }
+    run().catch(console.dir);
+});
+/*
 // GET /user/<id> : return a user without password
 app.get('/user/:id', function(req, res) {
     console.log(`GET /user/${req.params.id}`);
@@ -506,7 +658,7 @@ app.get('/user/:id', function(req, res) {
     }
     run().catch(console.dir);
 });
-
+*/
 app.post('/json', function(req, res) {
     console.log(`POST /json`);
     
@@ -536,4 +688,30 @@ const compareDate = (object1, object2, key) => {
 
 const checkValidation = (v) => {
     return (v != undefined && v != null && v != "");
+}
+
+const sevenDayBefore_EPOCH = () => {
+    let curDate = new Date(new Date().setDate(new Date().getDate()-6));
+    curDate.setHours(0,0,0,0);
+    return Math.floor(curDate.getTime()); //EPOCH
+} 
+
+const today_EPOCH = () => {
+    let curDate = new Date(new Date().setDate(new Date().getDate()));
+    curDate.setHours(0,0,0,0);
+    return Math.floor(curDate.getTime()); //EPOCH
+} 
+
+const formatDate = (date) => {
+    let d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return [year, month, day].join('-');
 }

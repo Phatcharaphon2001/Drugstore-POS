@@ -18,9 +18,21 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 500px;
-  height: 500px;
+  width: 550px;
+  height: 600px;
   /* border: 3px solid black; */
-  box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 3px 3px 3px 3px rgba(86, 76, 76, 0.1);
   border-radius: 20px;
+}
+
+.container-login h3{
+  font-weight: bold;
+  font-size: 35px;
+  color: #274D5A;
+}
+
+.container-login button{
+  background-color: #42988D;
+  border: none;
+  border-radius: 2rem;
 }
