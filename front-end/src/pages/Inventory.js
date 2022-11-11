@@ -10,7 +10,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Table from 'react-bootstrap/Table';
 import Swal from "sweetalert2";
-import { async } from "@firebase/util";
+
 
 
 
@@ -89,7 +89,6 @@ const Inventory = () => {
 
 
   //get ID
-  const [editId, setEditId] = useState(null);
   const [editFormData, setEditFormData] = useState({
     _id: "",
     name: "",
@@ -110,8 +109,6 @@ const Inventory = () => {
 
   //edit modal data
   const handleEditProductForm = (e, product) => {
-    e.preventDefault();
-    setEditId(product.id)
     const  formVlues = {
       _id: product._id,
       name: product.name,
@@ -157,20 +154,31 @@ const Inventory = () => {
     //Delete Product
     const handleDelete = (e) => {
       e.preventDefault();
-      let targetID = editFormData._id;
-      console.log(targetID);
-      const newProducts = [...products];
-      const formIndex = products.findIndex((product) => product.id === editFormData._id);
-      axios.delete(`http://localhost:27777/inventory/delete/${editFormData._id}`, )
-      .then((res)=>{
-        if (res.data !== null) {
-          //Close modal
-          handleCloseEdit();
-          resetProduct();
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.isConfirmed) {  let targetID = editFormData._id;
+          console.log(targetID);
+          const newProducts = [...products];
+          const formIndex = products.findIndex((product) => product.id === editFormData._id);
+          axios.delete(`http://localhost:27777/inventory/delete/${editFormData._id}`, )
+          Swal.fire(
+            'Deleted!',
+            'Your file has been deleted.',
+            'success'
+          )
+          newProducts.splice(formIndex, 1);
+          console.log(newProducts);
         }
-      });
-      newProducts.splice(formIndex, 1);
-      console.log(newProducts);
+        handleCloseEdit();
+        resetProduct();
+      })
     };
   
 
@@ -193,7 +201,7 @@ const Inventory = () => {
       </Container>
 
 
-        <Form className="row g-3 ms-auto">
+        <Form className="row g-3 ms-auto mb-3">
           <div className="col-auto">
             <Form.Control
               type="text"
@@ -443,11 +451,11 @@ const Inventory = () => {
               />
             </Form.Group>
             <Modal.Footer>
-              <Button variant="danger" onClick={handleDelete} type="submit">
-                Delete Product
-              </Button>
               <Button variant="success" type="submit">
                 Save
+              </Button>
+              <Button variant="danger" onClick={handleDelete} type="submit">
+                Delete Product
               </Button>
             </Modal.Footer>
           </Form>
