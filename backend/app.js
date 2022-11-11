@@ -430,7 +430,7 @@ app.post('/sale/submit', function(req, res) {
             let price = 0;
             let data = {
                 time: Date.now(),
-                item: {"8850999321004": 10}
+                item: req.body.item
             };
             //ITEM SHOULD BE IN LIST WITH ITEM_ID AS KEY AND AMOUNT AS VALUE
             //item: {"2913012930": 999, "2090123530": 111}
@@ -440,18 +440,20 @@ app.post('/sale/submit', function(req, res) {
             } else {
                 let inv = await inventory.find({_id: {$in: Object.keys(data.item)}}).toArray();
                 let invalid = [];
-                let price = 0;
+                let curPrice = 0;
                 //inv.sort((i,j)=>{return i._id - j._id;});
                 for (let i = 0; i < inv.length; i++) {
                     let curID = inv[i]._id;
                     if (inv[i].amount >= data.item[curID]) {
                         inv[i].amount -= data.item[curID];
-                        price += inv[i].price_sell*data.item[curID];
+                        curPrice += (inv[i].price_sell * data.item[curID]);
                     } else {
                         invalid.push(curID);
                     }
                 }
+                if (inv.length == 0) invalid = [{"empty": 1}];
                 if (invalid.length == 0) {
+                    
                     for (let i = 0; i < inv.length; i++) {
                         let e = inv[i];
                         const updateInv = await inventory.updateOne({_id: e._id}, {$set: {amount: e.amount}});
@@ -460,20 +462,21 @@ app.post('/sale/submit', function(req, res) {
                             break;
                         }
                     }
-                    data.price = price;
+                    
+                    data["price"] = curPrice;
                     const result = await sales.insertOne(data);
                     if (result.acknowledged && result.insertedId) {
-                        res.end(JSON.stringify({_id: result.insertedId, price: price, qr: `https://promptpay.io/0908508007/${price}`, invalid: invalid}, null, 4));
+                        res.end(JSON.stringify({_id: result.insertedId, price: curPrice, qr: `https://promptpay.io/0908508007/${curPrice}`, invalid: invalid}, null, 4));
                     } else {
-                        res.end(JSON.stringify({}, null, 4));
+                        res.end(JSON.stringify({err: 1}, null, 4));
                     }
                 } else {
-                    res.end(JSON.stringify({}, null, 4));
+                    res.end(JSON.stringify({invalid: invalid}, null, 4));
                 }
             }
         } catch (e) {
             console.log(e);
-            res.end(JSON.stringify({}, null, 4));
+            res.end(JSON.stringify({err: e}, null, 4));
         } finally {
             await client.close();
         }
