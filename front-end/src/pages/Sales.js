@@ -23,7 +23,7 @@ const Sales = () => {
   async function handleSubmit(e) {
     e.preventDefault();
     console.log(e.target[0].value);
-     await axios.get(`http://localhost:27777/inventory/id/${e.target[0].value}`)
+     await axios.get(`http://p0nd.ga:27777/inventory/id/${e.target[0].value}`)
     .then((response) => {
       return response.data[0];
     }).then((e)=>{
@@ -54,7 +54,7 @@ const Sales = () => {
   //   e.preventDefault();
   //   console.log(e.target[0].value);
   //   await axios
-  //     .get(`http://localhost:27777/inventory/id/${e.target[0].value}`)
+  //     .get(`http://p0nd.ga:27777/inventory/id/${e.target[0].value}`)
   //     .then((response) => {
   //       if (response.data.length !== 0) {
   //         setAddProduct(response.data[0]);
@@ -133,7 +133,7 @@ const Sales = () => {
     cart.forEach(cartItem => {
       newCart[cartItem._id] = cartItem.amount;
     });
-    axios.post('http://localhost:27777/sale/submit',{item: newCart})
+    axios.post('http://p0nd.ga:27777/sale/submit',{item: newCart})
     .then((response) => {
       console.log(response.data);
       document.getElementById("saleRightMenu").innerHTML = `<img src="${response.data.qr}" style={width: 100%}><br>`

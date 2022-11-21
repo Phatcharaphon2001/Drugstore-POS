@@ -21,7 +21,7 @@ const Inventory = () => {
 
   useEffect(() => {
     async function getProducts() {
-      let data = await axios.get("http://localhost:27777/inventory/")
+      let data = await axios.get("http://p0nd.ga:27777/inventory/")
       .then((e)=>{return e.data})
       setProducts(data);
     }
@@ -65,7 +65,7 @@ const Inventory = () => {
   }
 
  async function resetProduct() {
-  let data = await axios.get("http://localhost:27777/inventory/")
+  let data = await axios.get("http://p0nd.ga:27777/inventory/")
   .then((e)=>{return e.data})
   setProducts(data);
  }
@@ -140,7 +140,7 @@ const Inventory = () => {
     const formIndex = products.findIndex((product) => product.id === editFormData._id);
     newProducts[formIndex] = saveProduct;
     
-    axios.post('http://localhost:27777/inventory/update',saveProduct)
+    axios.post('http://p0nd.ga:27777/inventory/update',saveProduct)
     .then((res)=>{
       if (res.data !== null) {
         //Close modal
@@ -167,7 +167,7 @@ const Inventory = () => {
           console.log(targetID);
           const newProducts = [...products];
           const formIndex = products.findIndex((product) => product.id === editFormData._id);
-          axios.delete(`http://localhost:27777/inventory/delete/${editFormData._id}`, )
+          axios.delete(`http://p0nd.ga:27777/inventory/delete/${editFormData._id}`, )
           Swal.fire(
             'Deleted!',
             'Your file has been deleted.',
